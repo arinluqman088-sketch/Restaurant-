@@ -1,60 +1,42 @@
-// Restaurant POS Cloud - Kurdish Unicode-safe version v26
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import {
-  getFirestore, doc, collection, setDoc, getDoc, getDocs, deleteDoc,
-  onSnapshot, query, orderBy, writeBatch, increment
-} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+// Restaurant POS - working copy-paste version v28
+// Default login: admin / 1234
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAleyu9rnAvsrjAOVgaMO94anX6kBMK9iU",
-  authDomain: "restaurant-41f16.firebaseapp.com",
-  projectId: "restaurant-41f16",
-  storageBucket: "restaurant-41f16.firebasestorage.app",
-  messagingSenderId: "95826782677",
-  appId: "1:95826782677:web:f32e3e2d4388c4a1f3355c",
-  measurementId: "G-DZXNZ3HM05"
-};
+const STORE_KEY = "restaurant_pos_v28";
 
-const fbApp = initializeApp(firebaseConfig);
-const db = getFirestore(fbApp);
-
-const RESTAURANT_ID = "main";
-const PATH = ["restaurants", RESTAURANT_ID];
-
-const DEFAULT = {
+const DEFAULTS = {
   user: {
     username: "admin",
     password: "1234",
-    captain\u067e\u0627\u0633\u06c6\u0631\u062f: "1111",
-    kitchen\u067e\u0627\u0633\u06c6\u0631\u062f: "2222",
-    restaurant\u0646\u0627\u0648: "\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a",
+    captainPassword: "1111",
+    kitchenPassword: "2222",
+    restaurantName: "سیستەمی ڕێستۆرانت",
     phone: "0770 000 0000",
     servicePercent: 0,
     taxPercent: 0,
-    receiptNote: "\u0633\u0648\u067e\u0627\u0633 \u0628\u06c6 \u0633\u06d5\u0631\u062f\u0627\u0646\u062a\u0627\u0646"
+    receiptNote: "سوپاس بۆ سەردانتان"
   },
   tables: [
-    { id:"T1", name:"\u0645\u06ce\u0632\u06cc 1", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:1 },
-    { id:"T2", name:"\u0645\u06ce\u0632\u06cc 2", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:2 },
-    { id:"T3", name:"\u0645\u06ce\u0632\u06cc 3", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:3 },
-    { id:"T4", name:"\u0645\u06ce\u0632\u06cc 4", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:4 },
-    { id:"T5", name:"\u0645\u06ce\u0632\u06cc 5", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:5 },
-    { id:"T6", name:"\u0645\u06ce\u0632\u06cc 6", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:6 },
-    { id:"TA", name:"\u0633\u06d5\u0641\u06d5\u0631\u06cc", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:7 },
-    { id:"DL", name:"\u06af\u06d5\u06cc\u0627\u0646\u062f\u0646", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:8 }
+    { id: "T1", name: "مێزی 1", status: "empty", sort: 1 },
+    { id: "T2", name: "مێزی 2", status: "empty", sort: 2 },
+    { id: "T3", name: "مێزی 3", status: "empty", sort: 3 },
+    { id: "T4", name: "مێزی 4", status: "empty", sort: 4 },
+    { id: "T5", name: "مێزی 5", status: "empty", sort: 5 },
+    { id: "T6", name: "مێزی 6", status: "empty", sort: 6 },
+    { id: "TA", name: "سەفەری", status: "empty", sort: 7 },
+    { id: "DL", name: "گەیاندن", status: "empty", sort: 8 }
   ],
   menu: [
-    { id:"F001", code:"F001", name:"\u0628\u06d5\u0631\u06af\u06d5\u0631", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:5000, cost:3000, stock:50, min\u0633\u062a\u06c6\u06a9:5, sort:1 },
-    { id:"F002", code:"F002", name:"\u067e\u06cc\u062a\u0632\u0627", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:7000, cost:4200, stock:40, min\u0633\u062a\u06c6\u06a9:5, sort:2 },
-    { id:"F003", code:"F003", name:"\u0645\u0631\u06cc\u0634\u06a9", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:8000, cost:5000, stock:35, min\u0633\u062a\u06c6\u06a9:5, sort:3 },
-    { id:"D001", code:"D001", name:"\u0626\u0627\u0648", category:"\u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5", price:500, cost:250, stock:100, min\u0633\u062a\u06c6\u06a9:15, sort:4 },
-    { id:"D002", code:"D002", name:"\u067e\u06ce\u067e\u0633\u06cc", category:"\u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5", price:1000, cost:650, stock:80, min\u0633\u062a\u06c6\u06a9:10, sort:5 },
-    { id:"S001", code:"S001", name:"\u0634\u06cc\u0631\u06cc\u0646\u06cc", category:"\u0634\u06cc\u0631\u06cc\u0646\u06cc", price:3500, cost:1800, stock:25, min\u0633\u062a\u06c6\u06a9:5, sort:6 }
+    { id: "F001", code: "F001", name: "بەرگەر", category: "خواردن", price: 5000, cost: 3000, stock: 50, minStock: 5, sort: 1 },
+    { id: "F002", code: "F002", name: "پیتزا", category: "خواردن", price: 7000, cost: 4200, stock: 40, minStock: 5, sort: 2 },
+    { id: "F003", code: "F003", name: "مریشک", category: "خواردن", price: 8000, cost: 5000, stock: 35, minStock: 5, sort: 3 },
+    { id: "D001", code: "D001", name: "ئاو", category: "خواردنەوە", price: 500, cost: 250, stock: 100, minStock: 15, sort: 4 },
+    { id: "D002", code: "D002", name: "پێپسی", category: "خواردنەوە", price: 1000, cost: 650, stock: 80, minStock: 10, sort: 5 },
+    { id: "S001", code: "S001", name: "شیرینی", category: "شیرینی", price: 3500, cost: 1800, stock: 25, minStock: 5, sort: 6 }
   ]
 };
 
 let data = {
-  user: DEFAULT.user,
+  user: { ...DEFAULTS.user },
   tables: [],
   menu: [],
   orders: {},
@@ -67,28 +49,61 @@ let state = {
   page: "dashboard",
   logged: false,
   role: "",
-  selected\u0645\u06ce\u0632: null,
-  editing\u0626\u0627\u06cc\u062a\u0645: null,
-  selectedCat: "",
-  ready: false,
-  error: ""
+  selectedTable: null,
+  selectedCategory: "",
+  menuSearch: "",
+  editingItem: null
 };
 
-let unsubscribers = [];
+function byId(id) { return document.getElementById(id); }
+function clone(x) { return JSON.parse(JSON.stringify(x)); }
+function makeId(prefix = "id") { return prefix + "_" + Date.now() + "_" + Math.random().toString(16).slice(2); }
+function today() { return new Date().toISOString().slice(0, 10); }
+function month() { return new Date().toISOString().slice(0, 7); }
+function nowISO() { return new Date().toISOString(); }
+function money(n) { return Number(n || 0).toLocaleString() + " IQD"; }
+function esc(v) { return String(v ?? "").replace(/[&<>'"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[c])); }
+function statusText(s) { return ({ empty: "بەتاڵ", busy: "سەرقاڵ", reserved: "گیراوە", open: "کراوە", kitchen: "چێشتخانە", ready: "ئامادەیە" })[s] || s || "بەتاڵ"; }
+function canManage() { return state.role === "admin" || state.role === "cashier"; }
+function canAdmin() { return state.role === "admin"; }
 
-function settingsRef(){ return doc(db, ...PATH, "settings", "main"); }
-function colRef(name){ return collection(db, ...PATH, name); }
-function docRef(name,id){ return doc(db, ...PATH, name, id); }
-function clean(obj){ return JSON.parse(JSON.stringify(obj)); }
-function byId(id){ return document.getElementById(id); }
-function money(n){ return Number(n || 0).toLocaleString() + " IQD"; }
-function today(){ return new Date().toISOString().slice(0,10); }
-function month(){ return new Date().toISOString().slice(0,7); }
-function nowISO(){ return new Date().toISOString(); }
+function baseData() {
+  return {
+    user: { ...DEFAULTS.user },
+    tables: clone(DEFAULTS.tables),
+    menu: clone(DEFAULTS.menu),
+    orders: {},
+    sales: [],
+    expenses: [],
+    customers: []
+  };
+}
 
-function tableById(id){ return data.tables.find(t => t.id === id); }
+function loadData() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (!saved) data = baseData();
+    else {
+      data.user = { ...DEFAULTS.user, ...(saved.user || {}) };
+      data.tables = Array.isArray(saved.tables) && saved.tables.length ? saved.tables : clone(DEFAULTS.tables);
+      data.menu = Array.isArray(saved.menu) && saved.menu.length ? saved.menu : clone(DEFAULTS.menu);
+      data.orders = saved.orders && typeof saved.orders === "object" ? saved.orders : {};
+      data.sales = Array.isArray(saved.sales) ? saved.sales : [];
+      data.expenses = Array.isArray(saved.expenses) ? saved.expenses : [];
+      data.customers = Array.isArray(saved.customers) ? saved.customers : [];
+    }
+  } catch (e) {
+    data = baseData();
+  }
+}
 
-function newOrder(tableId){
+function saveData() { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+function saveAndRender() { saveData(); render(); }
+
+function getTable(id) { return data.tables.find(t => t.id === id); }
+function getItem(id) { return data.menu.find(i => i.id === id); }
+
+function blankOrder(tableId) {
   return {
     tableId,
     items: [],
@@ -96,207 +111,532 @@ function newOrder(tableId){
     type: "dinein",
     status: "open",
     note: "",
-    customer\u0646\u0627\u0648: "",
-    customer\u0645\u06c6\u0628\u0627\u06cc\u0644: "",
+    customerName: "",
+    customerPhone: "",
     created: nowISO(),
     updated: nowISO()
   };
 }
 
-function order(id){ return data.orders[id] || newOrder(id); }
-function items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o){ return (o.items || []).reduce((s,i) => s + Number(i.qty || 0) * Number(i.price || 0), 0); }
-function service\u0628\u0695(o){ return Math.round(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) * Number(data.user.servicePercent || 0) / 100); }
-function tax\u0628\u0695(o){ return Math.round((items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) + service\u0628\u0695(o) - Number(o.discount || 0)) * Number(data.user.taxPercent || 0) / 100); }
-function order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o){ return Math.max(0, items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) + service\u0628\u0695(o) + tax\u0628\u0695(o) - Number(o.discount || 0)); }
+function getOrder(tableId) { return data.orders[tableId] || blankOrder(tableId); }
+function itemsTotal(o) { return (o.items || []).reduce((s, i) => s + Number(i.qty || 0) * Number(i.price || 0), 0); }
+function serviceAmount(o) { return Math.round(itemsTotal(o) * Number(data.user.servicePercent || 0) / 100); }
+function taxAmount(o) { return Math.round((itemsTotal(o) + serviceAmount(o) - Number(o.discount || 0)) * Number(data.user.taxPercent || 0) / 100); }
+function orderTotal(o) { return Math.max(0, itemsTotal(o) + serviceAmount(o) + taxAmount(o) - Number(o.discount || 0)); }
 
-function profitOfSale(s){
-  return (s.items || []).reduce((a,i) => a + (Number(i.price || 0) - Number(i.cost || 0)) * Number(i.qty || 0), 0)
+function saleProfit(s) {
+  return (s.items || []).reduce((a, i) => a + (Number(i.price || 0) - Number(i.cost || 0)) * Number(i.qty || 0), 0)
     + Number(s.service || 0)
     + Number(s.tax || 0)
     - Number(s.discount || 0);
 }
 
-function canManage(){ return state.role === "admin" || state.role === "cashier"; }
-function can\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646(){ return state.role === "admin"; }
-
-async function ensureInitialData(){
-  const s = await getDoc(settingsRef());
-
-  if(!s.exists()){
-    await setDoc(settingsRef(), clean(DEFAULT.user));
-  }
-
-  const tablesSnap = await getDocs(colRef("tables"));
-  if(tablesSnap.empty){
-    const b = writeBatch(db);
-    DEFAULT.tables.forEach(t => b.set(docRef("tables", t.id), clean(t)));
-    await b.commit();
-  }
-
-  const menuSnap = await getDocs(colRef("menu"));
-  if(menuSnap.empty){
-    const b = writeBatch(db);
-    DEFAULT.menu.forEach(i => b.set(docRef("menu", i.id), clean(i)));
-    await b.commit();
-  }
+function renderLoading() {
+  byId("app").innerHTML = `<div class="loading">Loading Restaurant POS Cloud...</div>`;
 }
 
-function startListeners(){
-  unsubscribers.forEach(u => u());
-  unsubscribers = [];
-
-  unsubscribers.push(onSnapshot(settingsRef(), snap => {
-    data.user = Object.assign({}, DEFAULT.user, snap.data() || {});
-    state.ready = true;
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(query(colRef("tables"), orderBy("sort","asc")), snap => {
-    data.tables = snap.docs.map(d => Object.assign({ id:d.id }, d.data()));
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(query(colRef("menu"), orderBy("sort","asc")), snap => {
-    data.menu = snap.docs.map(d => Object.assign({ id:d.id }, d.data()));
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(colRef("orders"), snap => {
-    const obj = {};
-    snap.docs.forEach(d => { obj[d.id] = Object.assign({ tableId:d.id }, d.data()); });
-    data.orders = obj;
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(query(colRef("sales"), orderBy("date","desc")), snap => {
-    data.sales = snap.docs.map(d => Object.assign({ id:d.id }, d.data()));
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(query(colRef("expenses"), orderBy("date","desc")), snap => {
-    data.expenses = snap.docs.map(d => Object.assign({ id:d.id }, d.data()));
-    render();
-  }, handleError));
-
-  unsubscribers.push(onSnapshot(query(colRef("customers"), orderBy("updated","desc")), snap => {
-    data.customers = snap.docs.map(d => Object.assign({ id:d.id }, d.data()));
-    render();
-  }, handleError));
-}
-
-function handleError(err){
-  console.error(err);
-  state.error = "Firebase error: " + (err.message || err);
-  render();
-}
-
-async function init(){
-  renderLoading();
-
-  try{
-    await ensureInitialData();
-    startListeners();
-    state.ready = true;
-    render();
-  }catch(e){
-    handleError(e);
-  }
-}
-
-function renderLoading(){
-  byId("app").innerHTML = `<div class="loading">Loading \u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a...</div>`;
-}
-
-function render(){
+function render() {
   const app = byId("app");
+  if (!app) return;
 
-  if(state.error){
+  if (!state.logged) {
     app.innerHTML = `
-    <div class="app">
-      <div class="card" style="margin:40px auto;max-width:760px">
-        <h2>\u06a9\u06ce\u0634\u06d5\u06cc Firebase</h2>
-        <div class="errorbox">${state.error}</div>
-        <p class="muted">\u0632\u06c6\u0631\u062c\u0627\u0631 \u0626\u06d5\u0645\u06d5 \u0648\u0627\u062a\u06d5 Firestore Database \u06cc\u0627\u0646 Rules \u0626\u0627\u0645\u0627\u062f\u06d5 \u0646\u06cc\u0646.</p>
-      </div>
-    </div>`;
-    return;
-  }
+      <div class="login card">
+        <div class="logo">POS</div>
+        <h2>چوونەژوورەوە</h2>
+        <p class="muted">سیستەمی ڕێستۆرانت - Working Version</p>
+        <div class="slogan">کاشێر، کاپتن و چێشتخانە بە یەک سیستەم</div>
 
-  if(!state.ready){
-    renderLoading();
-    return;
-  }
+        <label>ناوی بەکارهێنەر</label>
+        <input id="loginUser" value="admin">
 
-  if(!state.logged){
-    app.innerHTML = `
-    <div class="login card">
-      <div class="logo">POS</div>
-      <h2>\u0686\u0648\u0648\u0646\u06d5\u0698\u0648\u0648\u0631\u06d5\u0648\u06d5</h2>
-      <p class="muted">\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a - Cloud Sync</p>
-      <div class="slogan">\u06a9\u0627\u067e\u062a\u0646\u060c \u06a9\u0627\u0634\u06ce\u0631 \u0648 \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5 \u0647\u06d5\u0645\u0627\u0646 \u0626\u06c6\u0631\u062f\u06d5\u0631 \u0628\u06d5 \u0695\u0627\u0633\u062a\u06d5\u0648\u062e\u06c6 \u062f\u06d5\u0628\u06cc\u0646\u0646</div>
+        <label>پاسۆرد</label>
+        <input id="loginPass" type="password" placeholder="1234">
 
-      <label>\u0646\u0627\u0648\u06cc \u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631</label>
-      <input id="loginUser" value="admin">
+        <label>ڕۆڵ</label>
+        <select id="loginRole">
+          <option value="admin">ئەدمین / کاشێر</option>
+          <option value="cashier">Cashier</option>
+          <option value="captain">کاپتن</option>
+          <option value="kitchen">چێشتخانە</option>
+        </select>
 
-      <label>\u067e\u0627\u0633\u06c6\u0631\u062f</label>
-      <input id="loginPass" type="password" value="">
-
-      <label>\u0695\u06c6\u06b5</label>
-      <select id="login\u0695\u06c6\u06b5">
-        <option value="admin">\u0626\u06d5\u062f\u0645\u06cc\u0646 / \u06a9\u0627\u0634\u06ce\u0631</option>
-        <option value="cashier">Cashier</option>
-        <option value="captain">\u06a9\u0627\u067e\u062a\u0646</option>
-        <option value="kitchen">\u0634\u0627\u0634\u06d5\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</option>
-      </select>
-
-      <button onclick="login()" style="margin-top:12px">\u0686\u0648\u0648\u0646\u06d5\u0698\u0648\u0648\u0631\u06d5\u0648\u06d5</button>
-      <p class="muted small">\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0695\u06c6\u06b5\u06d5\u06a9\u06d5\u062a \u0628\u0646\u0648\u0648\u0633\u06d5 \u0628\u06c6 \u0628\u06d5\u0631\u062f\u06d5\u0648\u0627\u0645\u0628\u0648\u0648\u0646</p>
-    </div>`;
+        <button onclick="login()" style="margin-top:12px">چوونەژوورەوە</button>
+        <p class="muted small">Admin: admin / 1234 | Captain: 1111 | Kitchen: 2222</p>
+      </div>`;
     return;
   }
 
   const navs = state.role === "captain"
-    ? `${nav("orders","\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0627\u067e\u062a\u0646")}`
+    ? nav("orders", "ئۆردەری کاپتن")
     : state.role === "kitchen"
-      ? `${nav("kitchen","\u0628\u06d5\u0634\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5")}`
-      : `${nav("dashboard","\u062f\u0627\u0634\u0628\u06c6\u0631\u062f")}${nav("orders","\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646 / \u0626\u06c6\u0631\u062f\u06d5\u0631")}${nav("kitchen","\u0628\u06d5\u0634\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5")}${nav("menu","\u0645\u06cc\u0646\u06cc\u0648 / \u0633\u062a\u06c6\u06a9")}${nav("customers","\u06a9\u0695\u06cc\u0627\u0631\u0627\u0646")}${nav("expenses","\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a")}${nav("reports","\u0695\u0627\u067e\u06c6\u0631\u062a\u06d5\u06a9\u0627\u0646")}${nav("settings","\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646")}`;
+      ? nav("kitchen", "بەشی چێشتخانە")
+      : nav("dashboard", "داشبۆرد") +
+        nav("orders", "مێزەکان / ئۆردەر") +
+        nav("kitchen", "چێشتخانە") +
+        nav("menu", "مینیو / ستۆک") +
+        nav("customers", "کڕیاران") +
+        nav("expenses", "مەسروفات") +
+        nav("reports", "ڕاپۆرت") +
+        nav("settings", "ڕێکخستن");
 
   app.innerHTML = `
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">POS ${data.user.restaurant\u0646\u0627\u0648} <span class="badge blue">${state.role}</span></div>
-      <div class="actions">
-        <span class="badge">${new Date().toLocaleDateString()}</span>
-        <button class="secondary" onclick="logout()">\u0686\u0648\u0648\u0646\u06d5\u062f\u06d5\u0631\u06d5\u0648\u06d5</button>
+    <div class="app">
+      <div class="topbar">
+        <div class="brand">POS ${esc(data.user.restaurantName)} <span class="badge blue">${esc(state.role)}</span></div>
+        <div class="actions">
+          <span class="badge">${new Date().toLocaleDateString()}</span>
+          <button class="secondary" onclick="logout()">چوونەدەرەوە</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <div class="sidebar">${navs}</div>
+        <div class="content">${pageHtml()}</div>
       </div>
     </div>
-
-    <div class="layout">
-      <div class="sidebar">${navs}</div>
-      <div class="content">${pageHtml()}</div>
-    </div>
-  </div>
-
-  <div id="printArea" class="hidden"></div>`;
-
-  afterRender();
+    <div id="printArea" class="hidden"></div>`;
 }
 
-function nav(p,t){
+function nav(p, t) {
   return `<button class="navbtn ${state.page === p ? "active" : ""}" onclick="go('${p}')">${t}</button>`;
 }
 
-function go(p){
-  state.page = p;
-  render();
+function pageHtml() {
+  if (state.page === "dashboard") return dashboardHtml();
+  if (state.page === "orders") return ordersHtml();
+  if (state.page === "kitchen") return kitchenHtml();
+  if (state.page === "menu") return menuHtml();
+  if (state.page === "customers") return customersHtml();
+  if (state.page === "expenses") return expensesHtml();
+  if (state.page === "reports") return reportsHtml();
+  return settingsHtml();
 }
 
-function login(){
+function dashboardHtml() {
+  const todaySales = data.sales.filter(s => String(s.date || "").slice(0, 10) === today());
+  const monthSales = data.sales.filter(s => String(s.date || "").slice(0, 7) === month());
+
+  const expToday = data.expenses
+    .filter(e => String(e.date || "").slice(0, 10) === today())
+    .reduce((s, e) => s + Number(e.amount || 0), 0);
+
+  const total = todaySales.reduce((s, x) => s + Number(x.total || 0), 0);
+  const profit = todaySales.reduce((s, x) => s + saleProfit(x), 0) - expToday;
+  const openOrders = Object.values(data.orders).filter(o => (o.items || []).length).length;
+
+  const lowRows = data.menu
+    .filter(i => Number(i.stock || 0) <= Number(i.minStock || 0))
+    .map(i => `<tr><td>${esc(i.name)}</td><td>${i.stock}</td><td>${i.minStock}</td></tr>`)
+    .join("") || `<tr><td colspan="3" class="muted">هیچ ئایتمێک ستۆکی کەم نییە</td></tr>`;
+
+  const recentRows = data.sales.slice(0, 8)
+    .map(s => `<tr><td>${new Date(s.date).toLocaleString()}</td><td>${esc(s.type)}</td><td>${money(s.total)}</td></tr>`)
+    .join("") || `<tr><td colspan="3" class="muted">هێشتا فرۆشتن نییە</td></tr>`;
+
+  return `
+    <div class="grid four">
+      <div class="card glass"><div class="muted">فرۆشتنی ئەمڕۆ</div><div class="kpi">${money(total)}</div></div>
+      <div class="card glass"><div class="muted">قازانجی پاک</div><div class="kpi">${money(profit)}</div></div>
+      <div class="card glass"><div class="muted">ئۆردەری کراوە</div><div class="kpi">${openOrders}</div></div>
+      <div class="card glass"><div class="muted">فرۆشتنی مانگ</div><div class="kpi">${money(monthSales.reduce((s, x) => s + Number(x.total || 0), 0))}</div></div>
+    </div>
+
+    <div class="grid two" style="margin-top:14px">
+      <div class="card">
+        <h2>ستۆکی کەم</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>ئایتم</th><th>ستۆک</th><th>ئاگاداری</th></tr></thead>
+            <tbody>${lowRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>دوایین وەسلەکان</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>کات</th><th>جۆر</th><th>کۆی گشتی</th></tr></thead>
+            <tbody>${recentRows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function ordersHtml() {
+  const tableCards = data.tables.map(t => {
+    const o = getOrder(t.id);
+    const has = (o.items || []).length > 0;
+    const cls = has ? (o.status === "ready" ? "ready" : "busy") : (t.status === "reserved" ? "reserved" : "");
+
+    return `
+      <div class="tablecard ${cls} ${state.selectedTable === t.id ? "active" : ""}" onclick="selectTable('${t.id}')">
+        <h3>${esc(t.name)}</h3>
+        <span class="badge ${has ? "green" : ""}">${has ? statusText(o.status) : statusText(t.status)}</span>
+        <div class="muted">ئایتمەکان: ${(o.items || []).length}</div>
+        <strong>${money(orderTotal(o))}</strong>
+        ${canManage() ? `<button class="secondary" onclick="event.stopPropagation();toggleReserve('${t.id}')">گیراوە / بەتاڵ</button>` : ""}
+      </div>`;
+  }).join("");
+
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>مێزەکان / ئۆردەر</h2>
+        <div class="tablegrid">${tableCards}</div>
+      </div>
+
+      <div class="card">
+        <h2>وردەکاری ئۆردەر</h2>
+        ${orderBoxHtml()}
+      </div>
+    </div>`;
+}
+
+function orderBoxHtml() {
+  if (!state.selectedTable) return `<p class="muted">سەرەتا مێزێک هەڵبژێرە.</p>`;
+
+  const t = getTable(state.selectedTable);
+  if (!t) return `<p class="muted">مێز نەدۆزرایەوە.</p>`;
+
+  const o = getOrder(t.id);
+  const cats = [...new Set(data.menu.map(i => i.category || "Other"))];
+  const q = state.menuSearch.toLowerCase();
+
+  const items = data.menu.filter(i =>
+    (!state.selectedCategory || i.category === state.selectedCategory) &&
+    ((i.name || "").toLowerCase().includes(q) || (i.code || "").toLowerCase().includes(q))
+  );
+
+  const menuButtons = items.map(i => `
+    <button class="itembtn" onclick="addItem('${t.id}','${i.id}')">
+      <b>${esc(i.name)}</b>
+      <span>${esc(i.category)}</span>
+      <strong>${money(i.price)}</strong>
+    </button>
+  `).join("") || `<p class="muted">ئایتم نەدۆزرایەوە</p>`;
+
+  const orderRows = (o.items || []).map((i, idx) => `
+    <tr>
+      <td>${esc(i.name)}</td>
+      <td><input style="width:75px" type="number" min="1" value="${i.qty}" onchange="setItemQty('${t.id}',${idx},this.value)"></td>
+      <td>${money(Number(i.qty) * Number(i.price))}</td>
+      <td><button class="red" onclick="removeItem('${t.id}',${idx})">X</button></td>
+    </tr>
+  `).join("") || `<tr><td colspan="4" class="muted">هیچ ئایتمێک نییە</td></tr>`;
+
+  return `
+    <h3>${esc(t.name)}</h3>
+    <div class="kpi">${money(orderTotal(o))}</div>
+    <p class="muted">
+      کۆی لاوەکی: ${money(itemsTotal(o))} |
+      خزمەتگوزاری: ${money(serviceAmount(o))} |
+      باج: ${money(taxAmount(o))} |
+      داشکاندن: ${money(o.discount)}
+    </p>
+
+    <div class="row">
+      <div>
+        <label>جۆری ئۆردەر</label>
+        <select onchange="setOrderField('${t.id}','type',this.value)">
+          <option value="dinein" ${o.type === "dinein" ? "selected" : ""}>لەناو هۆڵ</option>
+          <option value="takeaway" ${o.type === "takeaway" ? "selected" : ""}>سەفەری</option>
+          <option value="delivery" ${o.type === "delivery" ? "selected" : ""}>گەیاندن</option>
+        </select>
+      </div>
+
+      <div>
+        <label>دۆخ</label>
+        <select onchange="setOrderField('${t.id}','status',this.value)">
+          <option value="open" ${o.status === "open" ? "selected" : ""}>کراوە</option>
+          <option value="kitchen" ${o.status === "kitchen" ? "selected" : ""}>چێشتخانە</option>
+          <option value="ready" ${o.status === "ready" ? "selected" : ""}>ئامادەیە</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div><label>کڕیار</label><input value="${esc(o.customerName)}" oninput="setOrderField('${t.id}','customerName',this.value)"></div>
+      <div><label>مۆبایل</label><input value="${esc(o.customerPhone)}" oninput="setOrderField('${t.id}','customerPhone',this.value)"></div>
+    </div>
+
+    ${canManage() ? `
+      <div class="paybox">
+        <label>داشکاندن</label>
+        <input type="number" min="0" value="${Number(o.discount || 0)}" oninput="setOrderField('${t.id}','discount',this.value)">
+      </div>
+    ` : ""}
+
+    <label>تێبینی</label>
+    <textarea class="order-note" oninput="setOrderField('${t.id}','note',this.value)">${esc(o.note)}</textarea>
+
+    <div class="categorybar">
+      <button class="secondary" onclick="setSelectedCategory('')">هەموو</button>
+      ${cats.map(c => `<button class="secondary" onclick="setSelectedCategory('${encodeURIComponent(c)}')">${esc(c)}</button>`).join("")}
+    </div>
+
+    <input placeholder="گەڕان بە ناو یان کۆد..." value="${esc(state.menuSearch)}" oninput="setMenuSearch(this.value)">
+    <div class="menugrid">${menuButtons}</div>
+
+    <h3>ئایتمەکان</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>ئایتم</th><th>دانە</th><th>کۆی گشتی</th><th></th></tr></thead>
+        <tbody>${orderRows}</tbody>
+      </table>
+    </div>
+
+    <div class="actions" style="margin-top:12px">
+      <button class="purple" onclick="setOrderField('${t.id}','status','kitchen')">بنێرە چێشتخانە</button>
+      ${canManage() ? `<button class="red" onclick="checkout('${t.id}')">فرۆشتن و چاپ</button><button class="secondary" onclick="clearOrder('${t.id}')">پاککردنەوە</button>` : ""}
+    </div>`;
+}
+
+function kitchenHtml() {
+  const rows = Object.values(data.orders)
+    .filter(o => (o.items || []).length && ["kitchen", "ready"].includes(o.status))
+    .map(o => `
+      <tr>
+        <td>${esc(getTable(o.tableId)?.name || o.tableId)}</td>
+        <td>${statusText(o.status)}</td>
+        <td>${(o.items || []).map(i => `${esc(i.name)} × ${i.qty}`).join("<br>")}</td>
+        <td>${esc(o.note || "")}</td>
+        <td><button class="green" onclick="setOrderField('${o.tableId}','status','ready')">ئامادەیە</button></td>
+      </tr>
+    `).join("") || `<tr><td colspan="5" class="muted">هیچ ئۆردەرێک لە چێشتخانە نییە</td></tr>`;
+
+  return `
+    <div class="card">
+      <h2>شاشەی چێشتخانە</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>مێز</th><th>دۆخ</th><th>ئایتمەکان</th><th>تێبینی</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function menuHtml() {
+  if (!canManage()) return `<div class="card"><h2>ڕێگەت پێنەدراوە</h2></div>`;
+
+  const p = state.editingItem ? getItem(state.editingItem) : null;
+
+  const rows = data.menu.map(i => `
+    <tr>
+      <td>${esc(i.code)}</td>
+      <td>${esc(i.name)}</td>
+      <td>${esc(i.category)}</td>
+      <td>${money(i.price)}</td>
+      <td><span class="badge ${Number(i.stock) <= Number(i.minStock) ? "red" : ""}">${i.stock}</span></td>
+      <td>
+        <button class="blue" onclick="editMenuItem('${i.id}')">دەستکاری</button>
+        <button class="red" onclick="deleteMenuItem('${i.id}')">سڕینەوە</button>
+      </td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>${p ? "دەستکاری ئایتم" : "زیادکردنی ئایتم"}</h2>
+
+        <label>کۆد</label>
+        <input id="menuCode" value="${esc(p?.code || "")}">
+
+        <label>ناو</label>
+        <input id="menuName" value="${esc(p?.name || "")}">
+
+        <label>جۆر</label>
+        <input id="menuCategory" value="${esc(p?.category || "")}" placeholder="خواردن / خواردنەوە">
+
+        <div class="row">
+          <div><label>نرخی فرۆشتن</label><input id="menuPrice" type="number" value="${Number(p?.price || 0)}"></div>
+          <div><label>نرخی کڕین</label><input id="menuCost" type="number" value="${Number(p?.cost || 0)}"></div>
+        </div>
+
+        <div class="row">
+          <div><label>ستۆک</label><input id="menuStock" type="number" value="${Number(p?.stock || 20)}"></div>
+          <div><label>ئاگاداری ستۆکی کەم</label><input id="menuMinStock" type="number" value="${Number(p?.minStock || 5)}"></div>
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+          <button class="green" onclick="saveMenuItem()">هەڵگرتن</button>
+          <button class="secondary" onclick="newMenuItem()">نوێ</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>مینیو / ستۆک</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>کۆد</th><th>ناو</th><th>جۆر</th><th>نرخ</th><th>ستۆک</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function customersHtml() {
+  const rows = data.customers.map(c => `
+    <tr>
+      <td>${esc(c.name)}</td>
+      <td>${esc(c.phone)}</td>
+      <td>${c.visits || 0}</td>
+      <td>${money(c.total)}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="4" class="muted">هێشتا هیچ کڕیارێک نییە</td></tr>`;
+
+  return `
+    <div class="card">
+      <h2>کڕیاران</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>ناو</th><th>مۆبایل</th><th>سەردان</th><th>کۆی گشتی</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function expensesHtml() {
+  if (!canManage()) return `<div class="card"><h2>ڕێگەت پێنەدراوە</h2></div>`;
+
+  const rows = data.expenses.map(e => `
+    <tr>
+      <td>${new Date(e.date).toLocaleString()}</td>
+      <td>${esc(e.title)}</td>
+      <td>${money(e.amount)}</td>
+      <td><button class="red" onclick="deleteExpense('${e.id}')">سڕینەوە</button></td>
+    </tr>
+  `).join("") || `<tr><td colspan="4" class="muted">مەسروف نییە</td></tr>`;
+
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>زیادکردنی مەسروف</h2>
+        <label>ناونیشان</label>
+        <input id="expenseTitle">
+        <label>بڕ</label>
+        <input id="expenseAmount" type="number">
+        <button class="green" style="margin-top:12px" onclick="addExpense()">زیادکردن</button>
+      </div>
+
+      <div class="card">
+        <h2>مەسروفات</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>کات</th><th>ناو</th><th>بڕ</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function reportsHtml() {
+  const totalSales = data.sales.reduce((s, x) => s + Number(x.total || 0), 0);
+  const totalExpenses = data.expenses.reduce((s, x) => s + Number(x.amount || 0), 0);
+  const totalProfit = data.sales.reduce((s, x) => s + saleProfit(x), 0) - totalExpenses;
+
+  const rows = data.sales.map(s => `
+    <tr>
+      <td>${new Date(s.date).toLocaleString()}</td>
+      <td>${esc(s.tableName)}</td>
+      <td>${esc(s.type)}</td>
+      <td>${money(s.total)}</td>
+      <td>${money(saleProfit(s))}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="5" class="muted">هیچ فرۆشتنێک نییە</td></tr>`;
+
+  return `
+    <div class="grid three">
+      <div class="card glass"><div class="muted">کۆی فرۆشتن</div><div class="kpi">${money(totalSales)}</div></div>
+      <div class="card glass"><div class="muted">کۆی مەسروف</div><div class="kpi">${money(totalExpenses)}</div></div>
+      <div class="card glass"><div class="muted">قازانج</div><div class="kpi">${money(totalProfit)}</div></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h2>هەموو وەسلەکان</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>کات</th><th>مێز</th><th>جۆر</th><th>کۆی گشتی</th><th>قازانج</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function settingsHtml() {
+  if (!canAdmin()) return `<div class="card"><h2>تەنها ئەدمین دەتوانێت</h2></div>`;
+
+  const rows = data.tables.map(t => `
+    <tr>
+      <td>${esc(t.name)}</td>
+      <td>${statusText(t.status)}</td>
+      <td><button class="red" onclick="deleteTable('${t.id}')">سڕینەوە</button></td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>ڕێکخستن</h2>
+
+        <label>ناوی ڕێستۆرانت</label>
+        <input id="restaurantName" value="${esc(data.user.restaurantName)}">
+
+        <label>ژمارەی مۆبایل</label>
+        <input id="restaurantPhone" value="${esc(data.user.phone)}">
+
+        <div class="row">
+          <div><label>Service %</label><input id="servicePercent" type="number" value="${Number(data.user.servicePercent || 0)}"></div>
+          <div><label>Tax %</label><input id="taxPercent" type="number" value="${Number(data.user.taxPercent || 0)}"></div>
+        </div>
+
+        <label>پاسۆردی نوێی ئەدمین</label>
+        <input id="newAdminPass" type="password" placeholder="بەتاڵ بهێڵە ئەگەر ناگۆڕیت">
+
+        <label>پاسۆردی کاپتن</label>
+        <input id="captainPass" value="${esc(data.user.captainPassword)}">
+
+        <label>پاسۆردی چێشتخانە</label>
+        <input id="kitchenPass" value="${esc(data.user.kitchenPassword)}">
+
+        <label>تێبینی وەسل</label>
+        <textarea id="receiptNote">${esc(data.user.receiptNote)}</textarea>
+
+        <div class="actions" style="margin-top:12px">
+          <button class="green" onclick="saveSettings()">هەڵگرتن</button>
+          <button class="secondary" onclick="exportBackup()">Backup</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>مێزەکان</h2>
+        <label>ناوی مێزی نوێ</label>
+        <input id="newTableName">
+        <button class="blue" style="margin-top:12px" onclick="addTable()">زیادکردنی مێز</button>
+
+        <div class="tablewrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>مێز</th><th>دۆخ</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+}
+
+function login() {
   const u = byId("loginUser").value.trim();
   const p = byId("loginPass").value;
-  const role = byId("login\u0695\u06c6\u06b5").value;
+  const role = byId("loginRole").value;
 
-  if(role === "captain" && p === String(data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f || "1111")){
+  if (role === "captain" && p === String(data.user.captainPassword || "1111")) {
     state.logged = true;
     state.role = "captain";
     state.page = "orders";
@@ -304,7 +644,7 @@ function login(){
     return;
   }
 
-  if(role === "kitchen" && p === String(data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f || "2222")){
+  if (role === "kitchen" && p === String(data.user.kitchenPassword || "2222")) {
     state.logged = true;
     state.role = "kitchen";
     state.page = "kitchen";
@@ -312,7 +652,7 @@ function login(){
     return;
   }
 
-  if((role === "admin" || role === "cashier") && u === data.user.username && p === data.user.password){
+  if ((role === "admin" || role === "cashier") && u === data.user.username && p === data.user.password) {
     state.logged = true;
     state.role = role;
     state.page = "dashboard";
@@ -320,1086 +660,400 @@ function login(){
     return;
   }
 
-  alert("\u0646\u0627\u0648\u06cc \u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631 \u06cc\u0627\u0646 \u067e\u0627\u0633\u06c6\u0631\u062f \u0647\u06d5\u06b5\u06d5\u06cc\u06d5");
+  alert("ناوی بەکارهێنەر یان پاسۆرد هەڵەیە");
 }
 
-function logout(){
+function logout() {
   state.logged = false;
   state.role = "";
   state.selectedTable = null;
   render();
 }
 
-function pageHtml(){
-  if(state.page === "dashboard") return dashboardHtml();
-  if(state.page === "orders") return ordersHtml();
-  if(state.page === "kitchen") return kitchenHtml();
-  if(state.page === "menu") return menuHtml();
-  if(state.page === "customers") return customersHtml();
-  if(state.page === "expenses") return expensesHtml();
-  if(state.page === "reports") return reportsHtml();
-  return settingsHtml();
+function go(page) {
+  state.page = page;
+  state.selectedCategory = "";
+  state.menuSearch = "";
+  render();
 }
 
-function afterRender(){
-  if(state.page === "orders"){
-    render\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646();
-    renderOrderBox();
-  }
-
-  if(state.page === "menu"){
-    renderMenuTable();
-  }
-
-  if(state.page === "expenses"){
-    render\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a();
-  }
-}
-
-/* DASHBOARD */
-
-function dashboardHtml(){
-  const d = data.sales.filter(s => String(s.date || "").slice(0,10) === today());
-  const m = data.sales.filter(s => String(s.date || "").slice(0,7) === month());
-  const expToday = data.expenses
-    .filter(e => String(e.date || "").slice(0,10) === today())
-    .reduce((s,e) => s + Number(e.amount || 0), 0);
-
-  const total = d.reduce((s,x) => s + Number(x.total || 0), 0);
-  const profit = d.reduce((s,x) => s + profitOfSale(x), 0) - expToday;
-  const openOrders = Object.values(data.orders).filter(o => (o.items || []).length).length;
-
-  return `
-  <div class="grid four">
-    <div class="card glass"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0626\u06d5\u0645\u0695\u06c6</div><div class="kpi">${money(total)}</div></div>
-    <div class="card glass"><div class="muted">\u0642\u0627\u0632\u0627\u0646\u062c\u06cc \u067e\u0627\u06a9</div><div class="kpi">${money(profit)}</div></div>
-    <div class="card glass"><div class="muted">\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0631\u0627\u0648\u06d5</div><div class="kpi">${openOrders}</div></div>
-    <div class="card glass"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0645\u0627\u0646\u06af</div><div class="kpi">${money(m.reduce((s,x) => s + Number(x.total || 0), 0))}</div></div>
-  </div>
-
-  <div class="grid two" style="margin-top:14px">
-    <div class="card"><h2>\u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645</h2>${low\u0633\u062a\u06c6\u06a9Table()}</div>
-    <div class="card"><h2>\u062f\u0648\u0627\u06cc\u06cc\u0646 \u0648\u06d5\u0633\u0644\u06d5\u06a9\u0627\u0646</h2>${recentSalesTable(8)}</div>
-  </div>`;
-}
-
-function low\u0633\u062a\u06c6\u06a9Table(){
-  const rows = data.menu
-    .filter(i => Number(i.stock) <= Number(i.min\u0633\u062a\u06c6\u06a9))
-    .map(i => `<tr><td>${i.name}</td><td>${i.stock}</td><td>${i.min\u0633\u062a\u06c6\u06a9}</td></tr>`)
-    .join("");
-
-  return `
-  <div class="tablewrap">
-    <table>
-      <thead><tr><th>\u0626\u0627\u06cc\u062a\u0645</th><th>\u0633\u062a\u06c6\u06a9</th><th>\u0626\u0627\u06af\u0627\u062f\u0627\u0631\u06cc</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="3" class="muted">\u0647\u06cc\u0686 \u0626\u0627\u06cc\u062a\u0645\u06ce\u06a9 \u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645 \u0646\u06cc\u06cc\u06d5</td></tr>'}</tbody>
-    </table>
-  </div>`;
-}
-
-function recentSalesTable(n){
-  return `
-  <div class="tablewrap">
-    <table>
-      <thead><tr><th>\u06a9\u0627\u062a</th><th>\u062c\u06c6\u0631</th><th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th></tr></thead>
-      <tbody>
-        ${
-          data.sales.slice(0,n).map(s => `
-            <tr>
-              <td>${new Date(s.date).toLocaleString()}</td>
-              <td>${s.type || ""}</td>
-              <td>${money(s.total)}</td>
-            </tr>
-          `).join("") || '<tr><td colspan="3" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0641\u0631\u06c6\u0634\u062a\u0646\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
-        }
-      </tbody>
-    </table>
-  </div>`;
-}
-
-/* ORDERS */
-
-function ordersHtml(){
-  return `
-  <div class="grid two">
-    <div class="card">
-      <h2>${state.role === "captain" ? "\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0627\u067e\u062a\u0646" : "\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646 / \u0626\u06c6\u0631\u062f\u06d5\u0631"}</h2>
-      <div id="tablesGrid" class="tablegrid"></div>
-    </div>
-
-    <div class="card">
-      <h2>\u0648\u0631\u062f\u06d5\u06a9\u0627\u0631\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</h2>
-      <div id="orderBox"></div>
-    </div>
-  </div>`;
-}
-
-function render\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646(){
-  const box = byId("tablesGrid");
-  if(!box) return;
-
-  box.innerHTML = data.tables.map(t => {
-    const o = order(t.id);
-    const has = (o.items || []).length > 0;
-    const cls = has ? (o.status === "ready" ? "ready" : "busy") : (t.status === "reserved" ? "reserved" : "");
-
-    return `
-    <div class="tablecard ${cls} ${state.selectedTable === t.id ? "active" : ""}">
-      <h3>${t.name}</h3>
-      <span class="badge ${has ? "green" : ""}">${has ? o.status : "\u0628\u06d5\u062a\u0627\u06b5"}</span>
-      <div class="muted">\u0626\u0627\u06cc\u062a\u0645\u06d5\u06a9\u0627\u0646: ${(o.items || []).length}</div>
-      <div class="muted">\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}</div>
-      <b>${money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))}</b>
-
-      <div class="actions">
-        <button class="blue" onclick="selectTable('${t.id}')">\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</button>
-        ${canManage() && has ? `<button class="red" onclick="checkout('${t.id}')">\u0648\u06d5\u0633\u0644</button>` : ""}
-        ${canManage() && !has ? `<button class="amber" onclick="reserveTable('${t.id}')">\u0695\u06cc\u0632\u06ce\u0631\u06a4</button>` : ""}
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function selectTable(id){
+function selectTable(id) {
   state.selectedTable = id;
   render();
 }
 
-async function reserveTable(id){
-  if(!canManage()){
-    return alert("\u062a\u06d5\u0646\u0647\u0627 \u06a9\u0627\u0634\u06ce\u0631 \u062f\u06d5\u062a\u0648\u0627\u0646\u06ce\u062a \u0645\u06ce\u0632 \u0695\u06cc\u0632\u06ce\u0631\u06a4 \u0628\u06a9\u0627\u062a");
-  }
-
-  const t = tableById(id);
-  await setDoc(
-    docRef("tables", id),
-    clean(Object.assign({}, t, { status: t.status === "reserved" ? "\u0628\u06d5\u062a\u0627\u06b5" : "reserved" })),
-    { merge:true }
-  );
+function setSelectedCategory(encoded) {
+  state.selectedCategory = encoded ? decodeURIComponent(encoded) : "";
+  render();
 }
 
-async function saveOrder(o){
+function setMenuSearch(value) {
+  state.menuSearch = value || "";
+  render();
+}
+
+function toggleReserve(id) {
+  const t = getTable(id);
+  if (!t) return;
+
+  if ((getOrder(id).items || []).length) {
+    return alert("ئەم مێزە ئۆردەری هەیە");
+  }
+
+  t.status = t.status === "reserved" ? "empty" : "reserved";
+  saveAndRender();
+}
+
+function setOrderField(tableId, field, value) {
+  const o = getOrder(tableId);
+  o[field] = field === "discount" ? Number(value || 0) : value;
   o.updated = nowISO();
-  await setDoc(docRef("orders", o.tableId), clean(o));
+
+  data.orders[tableId] = o;
+
+  const t = getTable(tableId);
+  if (t && (o.items || []).length) t.status = "busy";
+
+  saveAndRender();
 }
 
-async function updateTable\u062f\u06c6\u062e(id,status){
-  const t = tableById(id) || { id };
-  await setDoc(docRef("tables", id), clean(Object.assign({}, t, { status })), { merge:true });
-}
+function addItem(tableId, itemId) {
+  const p = getItem(itemId);
+  if (!p) return;
 
-function set\u062c\u06c6\u0631(id,v){
-  const o = order(id);
-  o.type = v;
-  saveOrder(o);
-}
-
-function set\u062f\u06c6\u062e(id,v){
-  const o = order(id);
-  o.status = v;
-  saveOrder(o);
-}
-
-function set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646(id,v){
-  const o = order(id);
-  o.discount = Math.max(0, Number(v || 0));
-  saveOrder(o);
-  updateOrder\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(id);
-}
-
-function setNote(id,v){
-  const o = order(id);
-  o.note = v;
-  saveOrder(o);
-}
-
-function set\u06a9\u0695\u06cc\u0627\u0631Info(id,field,v){
-  const o = order(id);
-  o[field] = v;
-  saveOrder(o);
-}
-
-function updateOrder\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(id){
-  const o = order(id);
-
-  const k = byId("orderKpi");
-  if(k) k.textContent = money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o));
-
-  const line = byId("orderSummary");
-  if(line){
-    line.textContent =
-      `\u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))} | \u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(service\u0628\u0695(o))} | \u0628\u0627\u062c: ${money(tax\u0628\u0695(o))} | \u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}`;
-  }
-}
-
-function renderOrderBox(){
-  const box = byId("orderBox");
-  if(!box) return;
-
-  if(!state.selectedTable){
-    box.innerHTML = `<p class="muted">\u0633\u06d5\u0631\u06d5\u062a\u0627 \u0645\u06ce\u0632\u06ce\u06a9 \u0647\u06d5\u06b5\u0628\u0698\u06ce\u0631\u06d5.</p>`;
-    return;
+  if (Number(p.stock || 0) <= 0) {
+    return alert("ئەم ئایتمە ستۆکی نەماوە");
   }
 
-  const t = tableById(state.selectedTable);
-  const o = order(t.id);
+  const o = getOrder(tableId);
+  const existing = o.items.find(x => x.id === itemId);
 
-  box.innerHTML = `
-  <h3>${t.name}</h3>
+  if (existing) existing.qty = Number(existing.qty || 0) + 1;
+  else o.items.push({ id: p.id, name: p.name, price: Number(p.price || 0), cost: Number(p.cost || 0), qty: 1 });
 
-  <div id="orderKpi" class="kpi">${money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))}</div>
+  data.orders[tableId] = o;
 
-  <p id="orderSummary" class="muted">
-    \u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))} |
-    \u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(service\u0628\u0695(o))} |
-    \u0628\u0627\u062c: ${money(tax\u0628\u0695(o))} |
-    \u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}
-  </p>
+  const t = getTable(tableId);
+  if (t) t.status = "busy";
 
-  <div class="row">
-    <div>
-      <label>\u062c\u06c6\u0631\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</label>
-      <select onchange="set\u062c\u06c6\u0631('${t.id}',this.value)">
-        <option ${o.type === 'dinein' ? 'selected' : ''} value="dinein">\u0644\u06d5\u0646\u0627\u0648 \u0647\u06c6\u06b5</option>
-        <option ${o.type === 'takeaway' ? 'selected' : ''} value="takeaway">\u0633\u06d5\u0641\u06d5\u0631\u06cc</option>
-        <option ${o.type === 'delivery' ? 'selected' : ''} value="delivery">\u06af\u06d5\u06cc\u0627\u0646\u062f\u0646</option>
-      </select>
-    </div>
-
-    <div>
-      <label>\u062f\u06c6\u062e</label>
-      <select onchange="set\u062f\u06c6\u062e('${t.id}',this.value)">
-        <option ${o.status === 'open' ? 'selected' : ''} value="open">\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</option>
-        <option ${o.status === 'kitchen' ? 'selected' : ''} value="kitchen">\u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</option>
-        <option ${o.status === 'ready' ? 'selected' : ''} value="ready">\u0626\u0627\u0645\u0627\u062f\u06d5\u06cc\u06d5</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="row">
-    <div>
-      <label>\u06a9\u0695\u06cc\u0627\u0631</label>
-      <input value="${o.customer\u0646\u0627\u0648 || ''}" oninput="set\u06a9\u0695\u06cc\u0627\u0631Info('${t.id}','customer\u0646\u0627\u0648',this.value)">
-    </div>
-
-    <div>
-      <label>\u0645\u06c6\u0628\u0627\u06cc\u0644</label>
-      <input value="${o.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || ''}" oninput="set\u06a9\u0695\u06cc\u0627\u0631Info('${t.id}','customer\u0645\u06c6\u0628\u0627\u06cc\u0644',this.value)">
-    </div>
-  </div>
-
-  ${
-    canManage()
-    ? `<div class="paybox">
-        <label>\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646</label>
-        <input type="number" min="0" value="${o.discount || 0}" oninput="set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646('${t.id}',this.value)">
-      </div>`
-    : ""
-  }
-
-  <label>\u062a\u06ce\u0628\u06cc\u0646\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</label>
-  <textarea class="order-note" oninput="setNote('${t.id}',this.value)">${o.note || ''}</textarea>
-
-  <div class="categorybar">
-    <button class="secondary" onclick="state.selectedCat='';renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">\u0647\u06d5\u0645\u0648\u0648</button>
-    ${
-      [...new Set(data.menu.map(i => i.category || "Other"))]
-      .map(c => `<button class="secondary" onclick="state.selectedCat='${c}';renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">${c}</button>`)
-      .join("")
-    }
-  </div>
-
-  <input id="menuSearch" placeholder="\u06af\u06d5\u0695\u0627\u0646 \u0628\u06d5 \u0646\u0627\u0648 \u06cc\u0627\u0646 \u06a9\u06c6\u062f..." oninput="renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">
-
-  <div id="menuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646" class="menugrid"></div>
-
-  <h3>\u0626\u0627\u06cc\u062a\u0645\u06d5\u06a9\u0627\u0646</h3>
-
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>\u0626\u0627\u06cc\u062a\u0645</th>
-          <th>\u062f\u0627\u0646\u06d5</th>
-          <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${
-          (o.items || []).map((i,idx) => `
-            <tr>
-              <td>${i.name}</td>
-              <td>
-                <input
-                  style="width:70px"
-                  type="number"
-                  min="1"
-                  value="${i.qty}"
-                  onchange="set\u062f\u0627\u0646\u06d5('${t.id}',${idx},this.value)"
-                >
-              </td>
-              <td>${money(i.qty * i.price)}</td>
-              <td>
-                <button class="red" onclick="remove\u0626\u0627\u06cc\u062a\u0645('${t.id}',${idx})">X</button>
-              </td>
-            </tr>
-          `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0626\u0627\u06cc\u062a\u0645\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <div class="actions" style="margin-top:12px">
-    <button class="purple" onclick="set\u062f\u06c6\u062e('${t.id}','kitchen')">\u0628\u0646\u06ce\u0631\u06d5 \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</button>
-    ${
-      canManage()
-      ? `<button class="red" onclick="checkout('${t.id}')">\u0641\u0631\u06c6\u0634\u062a\u0646 \u0648 \u0686\u0627\u067e</button>
-         <button class="secondary" onclick="clearOrder('${t.id}')">\u067e\u0627\u06a9\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</button>`
-      : ""
-    }
-  </div>`;
-
-  renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646();
+  saveAndRender();
 }
 
-function renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646(){
-  const box = byId("menuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646");
-  if(!box || !state.selectedTable) return;
+function setItemQty(tableId, index, value) {
+  const o = getOrder(tableId);
+  if (!o.items[index]) return;
 
-  const q = (byId("menuSearch")?.value || "").toLowerCase();
+  o.items[index].qty = Math.max(1, Number(value || 1));
+  data.orders[tableId] = o;
 
-  const items = data.menu.filter(i =>
-    (!state.selectedCat || i.category === state.selectedCat) &&
-    (
-      i.name.toLowerCase().includes(q) ||
-      i.code.toLowerCase().includes(q)
-    )
-  );
-
-  box.innerHTML = items.map(i => `
-    <button class="itembtn" onclick="add\u0626\u0627\u06cc\u062a\u0645('${state.selectedTable}','${i.id}')">
-      <b>${i.name}</b>
-      <span>${i.category}</span>
-      <strong>${money(i.price)}</strong>
-    </button>
-  `).join("");
+  saveAndRender();
 }
 
-async function add\u0626\u0627\u06cc\u062a\u0645(tid,itemId){
-  const p = data.menu.find(x => x.id === itemId);
-  if(!p) return;
+function removeItem(tableId, index) {
+  const o = getOrder(tableId);
+  o.items.splice(index, 1);
+  data.orders[tableId] = o;
 
-  if(Number(p.stock) <= 0){
-    return alert("\u0626\u06d5\u0645 \u0626\u0627\u06cc\u062a\u0645\u06d5 \u0633\u062a\u06c6\u06a9\u06cc \u0646\u06d5\u0645\u0627\u0648\u06d5");
-  }
-
-  const o = order(tid);
-  const it = (o.items || []).find(x => x.id === itemId);
-
-  if(it){
-    it.qty++;
-  }else{
-    o.items.push({
-      id:p.id,
-      name:p.name,
-      price:Number(p.price),
-      cost:Number(p.cost || 0),
-      qty:1
-    });
-  }
-
-  o.status = o.status || "open";
-
-  await saveOrder(o);
-  await updateTable\u062f\u06c6\u062e(tid,"busy");
+  saveAndRender();
 }
 
-async function set\u062f\u0627\u0646\u06d5(tid,idx,v){
-  const o = order(tid);
-  o.items[idx].qty = Math.max(1, Number(v || 1));
-  await saveOrder(o);
+function clearOrder(tableId) {
+  if (!confirm("دەتەوێت ئەم ئۆردەرە پاک بکەیتەوە؟")) return;
+
+  delete data.orders[tableId];
+
+  const t = getTable(tableId);
+  if (t) t.status = "empty";
+
+  saveAndRender();
 }
 
-async function remove\u0626\u0627\u06cc\u062a\u0645(tid,idx){
-  const o = order(tid);
-  o.items.splice(idx,1);
-  await saveOrder(o);
-}
+function checkout(tableId) {
+  if (!canManage()) return alert("تەنها کاشێر دەتوانێت فرۆشتن تەواو بکات");
 
-async function clearOrder(tid){
-  if(!confirm("\u062f\u06d5\u062a\u06d5\u0648\u06ce\u062a \u0626\u06d5\u0645 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06d5 \u067e\u0627\u06a9 \u0628\u06a9\u06d5\u06cc\u062a\u06d5\u0648\u06d5\u061f")) return;
+  const o = getOrder(tableId);
+  if (!(o.items || []).length) return alert("ئۆردەرەکە بەتاڵە");
 
-  await deleteDoc(docRef("orders",tid));
-  await updateTable\u062f\u06c6\u062e(tid,"\u0628\u06d5\u062a\u0627\u06b5");
-}
+  const total = orderTotal(o);
+  const paidText = prompt(`کۆی گشتی ${money(total)}\nپارەی وەرگیراو بنووسە:`, String(total));
 
-async function checkout(tid){
-  if(!canManage()){
-    return alert("\u062a\u06d5\u0646\u0647\u0627 \u06a9\u0627\u0634\u06ce\u0631 \u062f\u06d5\u062a\u0648\u0627\u0646\u06ce\u062a \u0641\u0631\u06c6\u0634\u062a\u0646 \u062a\u06d5\u0648\u0627\u0648 \u0628\u06a9\u0627\u062a");
-  }
+  if (paidText === null) return;
 
-  const t = tableById(tid);
-  const o = order(tid);
-
-  if(!o.items.length){
-    return alert("\u0626\u06c6\u0631\u062f\u06d5\u0631 \u0628\u06d5\u062a\u0627\u06b5\u06d5");
-  }
+  const paid = Number(paidText || 0);
+  if (paid < total) return alert("پارەکە کەمە");
 
   const sale = {
-    id: Date.now().toString(),
-    date: nowISO(),
-    table: t.name,
+    id: makeId("sale"),
+    tableId,
+    tableName: getTable(tableId)?.name || tableId,
+    items: clone(o.items),
     type: o.type,
-    status: "paid",
-    customer\u0646\u0627\u0648: o.customer\u0646\u0627\u0648 || "",
-    customer\u0645\u06c6\u0628\u0627\u06cc\u0644: o.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || "",
+    customerName: o.customerName || "",
+    customerPhone: o.customerPhone || "",
     note: o.note || "",
-    items: clean(o.items),
-    subtotal: items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
-    service: service\u0628\u0695(o),
-    tax: tax\u0628\u0695(o),
+    subtotal: itemsTotal(o),
+    service: serviceAmount(o),
+    tax: taxAmount(o),
     discount: Number(o.discount || 0),
-    total: order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
-    paid: order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
-    change: 0
+    total,
+    paid,
+    change: paid - total,
+    date: nowISO()
   };
 
-  const b = writeBatch(db);
-
-  b.set(docRef("sales", sale.id), clean(sale));
-
-  sale.items.forEach(it => {
-    const p = data.menu.find(x => x.id === it.id);
-    if(p){
-      b.set(
-        docRef("menu", it.id),
-        clean(Object.assign({}, p, { stock: Number(p.stock || 0) - it.qty })),
-        { merge:true }
-      );
-    }
+  sale.items.forEach(line => {
+    const m = getItem(line.id);
+    if (m) m.stock = Math.max(0, Number(m.stock || 0) - Number(line.qty || 0));
   });
 
-  if(sale.customer\u0646\u0627\u0648 || sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644){
-    const cid = (sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || sale.customer\u0646\u0627\u0648 || sale.id).replace(/[^a-zA-Z0-9_-]/g,"_");
+  data.sales.unshift(sale);
+  addCustomerSale(sale.customerName, sale.customerPhone, sale.total);
 
-    b.set(
-      docRef("customers", cid),
-      {
-        name: sale.customer\u0646\u0627\u0648 || "\u06a9\u0695\u06cc\u0627\u0631",
-        phone: sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || "",
-        visits: increment(1),
-        total: increment(sale.total),
-        updated: nowISO()
-      },
-      { merge:true }
-    );
+  delete data.orders[tableId];
+
+  const t = getTable(tableId);
+  if (t) t.status = "empty";
+
+  saveData();
+  printReceipt(sale);
+  render();
+}
+
+function addCustomerSale(name, phone, total) {
+  if (!name && !phone) return;
+
+  const key = (phone || name).toLowerCase();
+  let c = data.customers.find(x => (x.phone || x.name).toLowerCase() === key);
+
+  if (!c) {
+    c = {
+      id: makeId("customer"),
+      name: name || "بێ ناو",
+      phone: phone || "",
+      visits: 0,
+      total: 0,
+      updated: nowISO()
+    };
+    data.customers.unshift(c);
   }
 
-  b.delete(docRef("orders", tid));
-  b.set(docRef("tables", tid), clean(Object.assign({}, t, { status:"\u0628\u06d5\u062a\u0627\u06b5" })), { merge:true });
-
-  await b.commit();
-
-  print\u0648\u06d5\u0633\u0644(sale);
+  c.name = name || c.name;
+  c.phone = phone || c.phone;
+  c.visits = Number(c.visits || 0) + 1;
+  c.total = Number(c.total || 0) + Number(total || 0);
+  c.updated = nowISO();
 }
 
-/* KITCHEN */
-
-function kitchenHtml(){
-  const open = Object.values(data.orders).filter(o => o.items && o.items.length && o.status !== "paid");
-
-  return `
-  <div class="card">
-    <h2>\u0634\u0627\u0634\u06d5\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</h2>
-
-    <div class="grid two">
-      ${
-        open.map(o => {
-          const t = tableById(o.tableId) || { name:o.tableId };
-
-          return `
-          <div class="card">
-            <h3>${t.name}</h3>
-            <span class="badge ${o.status === 'ready' ? 'green' : 'purple'}">${o.status}</span>
-            <p class="muted">${o.note || ""}</p>
-
-            <div class="tablewrap">
-              <table>
-                <tbody>
-                  ${
-                    o.items.map(i => `
-                      <tr>
-                        <td>${i.name}</td>
-                        <td>${i.qty}</td>
-                      </tr>
-                    `).join("")
-                  }
-                </tbody>
-              </table>
-            </div>
-
-            <div class="actions" style="margin-top:10px">
-              <button class="purple" onclick="set\u062f\u06c6\u062e('${o.tableId}','kitchen')">\u0644\u06d5 \u0626\u0627\u0645\u0627\u062f\u06d5\u06a9\u0631\u062f\u0646\u062f\u0627\u06cc\u06d5</button>
-              <button class="green" onclick="set\u062f\u06c6\u062e('${o.tableId}','ready')">\u0626\u0627\u0645\u0627\u062f\u06d5\u06cc\u06d5</button>
-            </div>
-          </div>`;
-        }).join("") || '<p class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</p>'
-      }
-    </div>
-  </div>`;
-}
-
-/* RECEIPT */
-
-function print\u0648\u06d5\u0633\u0644(sale){
-  const lines = sale.items.map(i => `
-    <tr>
-      <td>${i.name}</td>
-      <td>${i.qty}</td>
-      <td>${money(i.qty * i.price)}</td>
-    </tr>
-  `).join("");
-
+function printReceipt(sale) {
   const area = byId("printArea");
+  if (!area) return;
 
   area.innerHTML = `
-  <div class="receipt">
-    <div class="receipt-head">
-      <div class="receipt-logo">POS</div>
-      <h3>${data.user.restaurant\u0646\u0627\u0648}</h3>
-      <p>${data.user.phone || ""}</p>
-    </div>
+    <div class="receipt">
+      <div class="receipt-head">
+        <div class="receipt-logo">POS</div>
+        <h3>${esc(data.user.restaurantName)}</h3>
+        <p>${esc(data.user.phone)}</p>
+        <p>${new Date(sale.date).toLocaleString()}</p>
+      </div>
 
-    <p><b>\u0645\u06ce\u0632:</b> ${sale.table}</p>
-    <p><b>\u062c\u06c6\u0631:</b> ${sale.type}</p>
-    <p><b>\u0648\u06d5\u0633\u0644:</b> ${sale.id}</p>
-    <p><b>\u0628\u06d5\u0631\u0648\u0627\u0631:</b> ${new Date(sale.date).toLocaleString()}</p>
+      <p>Table: ${esc(sale.tableName)} | Type: ${esc(sale.type)}</p>
 
-    <hr>
+      <table>
+        <thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+        <tbody>
+          ${sale.items.map(i => `<tr><td>${esc(i.name)}</td><td>${i.qty}</td><td>${money(Number(i.qty) * Number(i.price))}</td></tr>`).join("")}
+        </tbody>
+      </table>
 
-    <table>
-      <thead>
-        <tr>
-          <th>\u0626\u0627\u06cc\u062a\u0645</th>
-          <th>\u062f\u0627\u0646\u06d5</th>
-          <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
-        </tr>
-      </thead>
-      <tbody>${lines}</tbody>
-    </table>
+      <div class="receipt-total">
+        <p>Subtotal: ${money(sale.subtotal)}</p>
+        <p>Service: ${money(sale.service)}</p>
+        <p>Tax: ${money(sale.tax)}</p>
+        <p>Discount: ${money(sale.discount)}</p>
+        <h3>Total: ${money(sale.total)}</h3>
+        <p>Paid: ${money(sale.paid)}</p>
+        <p>Change: ${money(sale.change)}</p>
+      </div>
 
-    <hr>
-
-    <div class="receipt-total">
-      <p>\u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(sale.subtotal)}</p>
-      <p>\u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(sale.service)}</p>
-      <p>\u0628\u0627\u062c: ${money(sale.tax)}</p>
-      <p>\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(sale.discount)}</p>
-      <h3>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc: ${money(sale.total)}</h3>
-      <p>\u067e\u0627\u0631\u06d5\u06cc \u0648\u06d5\u0631\u06af\u06cc\u0631\u0627\u0648: ${money(sale.paid)}</p>
-      <p>\u06af\u06d5\u0695\u0627\u0648\u06d5: ${money(sale.change)}</p>
-    </div>
-
-    <div class="receipt-footer">
-      <p>${data.user.receiptNote}</p>
-      <p>\u0633\u0648\u067e\u0627\u0633 POS</p>
-    </div>
-  </div>`;
+      <div class="receipt-footer">
+        <p>${esc(data.user.receiptNote)}</p>
+        <p>سوپاس POS</p>
+      </div>
+    </div>`;
 
   area.classList.remove("hidden");
   document.body.classList.add("printing-receipt");
 
-  set\u06a9\u0627\u062aout(() => window.print(), 350);
+  setTimeout(() => window.print(), 300);
 
   const cleanPrint = () => {
     document.body.classList.remove("printing-receipt");
     area.classList.add("hidden");
     area.innerHTML = "";
-    state.selectedTable = null;
-    render();
     window.removeEventListener("afterprint", cleanPrint);
+    render();
   };
 
   window.addEventListener("afterprint", cleanPrint);
 
-  set\u06a9\u0627\u062aout(() => {
-    if(document.body.classList.contains("printing-receipt")){
-      cleanPrint();
-    }
+  setTimeout(() => {
+    if (document.body.classList.contains("printing-receipt")) cleanPrint();
   }, 60000);
 }
 
-/* MENU */
+function newMenuItem() {
+  state.editingItem = null;
+  render();
+}
 
-function menuHtml(){
-  if(!canManage()){
-    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
+function editMenuItem(id) {
+  state.editingItem = id;
+  render();
+}
+
+function saveMenuItem() {
+  const code = byId("menuCode").value.trim();
+  const name = byId("menuName").value.trim();
+  const price = Number(byId("menuPrice").value || 0);
+
+  if (!code || !name || !price) {
+    return alert("کۆد، ناو و نرخ پێویستن");
   }
 
-  return `
-  <div class="grid two">
-    <div class="card">
-      <h2>${state.editing\u0626\u0627\u06cc\u062a\u0645 ? "\u062f\u06d5\u0633\u062a\u06a9\u0627\u0631\u06cc \u0626\u0627\u06cc\u062a\u0645" : "\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646\u06cc \u0626\u0627\u06cc\u062a\u0645"}</h2>
-
-      <label>\u06a9\u06c6\u062f</label>
-      <input id="m\u06a9\u06c6\u062f">
-
-      <label>\u0646\u0627\u0648</label>
-      <input id="m\u0646\u0627\u0648">
-
-      <label>\u062c\u06c6\u0631</label>
-      <input id="m\u062c\u06c6\u0631" placeholder="\u062e\u0648\u0627\u0631\u062f\u0646 / \u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5 / \u0634\u06cc\u0631\u06cc\u0646\u06cc">
-
-      <div class="row">
-        <div>
-          <label>\u0646\u0631\u062e\u06cc \u0641\u0631\u06c6\u0634\u062a\u0646</label>
-          <input id="m\u0646\u0631\u062e" type="number">
-        </div>
-
-        <div>
-          <label>\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646</label>
-          <input id="m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646" type="number">
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>\u0633\u062a\u06c6\u06a9</label>
-          <input id="m\u0633\u062a\u06c6\u06a9" type="number" value="20">
-        </div>
-
-        <div>
-          <label>\u0626\u0627\u06af\u0627\u062f\u0627\u0631\u06cc \u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645</label>
-          <input id="mMin" type="number" value="5">
-        </div>
-      </div>
-
-      <div class="actions" style="margin-top:12px">
-        <button class="green" onclick="saveMenu\u0626\u0627\u06cc\u062a\u0645()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646</button>
-        <button class="secondary" onclick="state.editing\u0626\u0627\u06cc\u062a\u0645=null;render()">\u0646\u0648\u06ce</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>\u0645\u06cc\u0646\u06cc\u0648 / \u0633\u062a\u06c6\u06a9</h2>
-      <input id="menuListSearch" placeholder="\u06af\u06d5\u0695\u0627\u0646..." oninput="renderMenuTable()">
-      <div id="menuTable" style="margin-top:12px"></div>
-    </div>
-  </div>`;
-}
-
-function renderMenuTable(){
-  const box = byId("menuTable");
-  if(!box) return;
-
-  const q = (byId("menuListSearch")?.value || "").toLowerCase();
-
-  const rows = data.menu
-    .filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.code.toLowerCase().includes(q)
-    )
-    .map(p => `
-      <tr>
-        <td>${p.code}</td>
-        <td>${p.name}</td>
-        <td>${p.category}</td>
-        <td>${money(p.price)}</td>
-        <td><span class="badge ${p.stock <= p.min\u0633\u062a\u06c6\u06a9 ? 'red' : ''}">${p.stock}</span></td>
-        <td>
-          <button class="blue" onclick="editMenu\u0626\u0627\u06cc\u062a\u0645('${p.id}')">\u062f\u06d5\u0633\u062a\u06a9\u0627\u0631\u06cc</button>
-          <button class="red" onclick="deleteMenu\u0626\u0627\u06cc\u062a\u0645('${p.id}')">\u0633\u0695\u06cc\u0646\u06d5\u0648\u06d5</button>
-        </td>
-      </tr>
-    `).join("");
-
-  box.innerHTML = `
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>\u06a9\u06c6\u062f</th>
-          <th>\u0646\u0627\u0648</th>
-          <th>\u062c\u06c6\u0631</th>
-          <th>\u0646\u0631\u062e</th>
-          <th>\u0633\u062a\u06c6\u06a9</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
-}
-
-async function saveMenu\u0626\u0627\u06cc\u062a\u0645(){
-  const id = state.editing\u0626\u0627\u06cc\u062a\u0645 || (byId("m\u06a9\u06c6\u062f").value.trim() || crypto.randomUUID());
+  const id = state.editingItem || code.replace(/[^A-Za-z0-9_-]/g, "_") || makeId("item");
+  const old = getItem(id) || {};
 
   const item = {
+    ...old,
     id,
-    code: byId("m\u06a9\u06c6\u062f").value.trim(),
-    name: byId("m\u0646\u0627\u0648").value.trim(),
-    category: byId("m\u062c\u06c6\u0631").value.trim() || "Other",
-    price: Number(byId("m\u0646\u0631\u062e").value || 0),
-    cost: Number(byId("m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646").value || 0),
-    stock: Number(byId("m\u0633\u062a\u06c6\u06a9").value || 0),
-    min\u0633\u062a\u06c6\u06a9: Number(byId("mMin").value || 0),
-    sort: Date.now()
+    code,
+    name,
+    category: byId("menuCategory").value.trim() || "Other",
+    price,
+    cost: Number(byId("menuCost").value || 0),
+    stock: Number(byId("menuStock").value || 0),
+    minStock: Number(byId("menuMinStock").value || 0),
+    sort: old.sort || Date.now()
   };
 
-  if(!item.code || !item.name || !item.price){
-    return alert("\u06a9\u06c6\u062f\u060c \u0646\u0627\u0648 \u0648 \u0646\u0631\u062e \u067e\u06ce\u0648\u06cc\u0633\u062a\u0646");
-  }
+  const idx = data.menu.findIndex(i => i.id === id);
+  if (idx >= 0) data.menu[idx] = item;
+  else data.menu.push(item);
 
-  await setDoc(docRef("menu", id), clean(item), { merge:true });
-
-  state.editing\u0626\u0627\u06cc\u062a\u0645 = null;
-  render();
+  state.editingItem = null;
+  saveAndRender();
 }
 
-function editMenu\u0626\u0627\u06cc\u062a\u0645(id){
-  state.editing\u0626\u0627\u06cc\u062a\u0645 = id;
-  render();
-
-  const p = data.menu.find(x => x.id === id);
-
-  byId("m\u06a9\u06c6\u062f").value = p.code;
-  byId("m\u0646\u0627\u0648").value = p.name;
-  byId("m\u062c\u06c6\u0631").value = p.category || "";
-  byId("m\u0646\u0631\u062e").value = p.price;
-  byId("m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646").value = p.cost;
-  byId("m\u0633\u062a\u06c6\u06a9").value = p.stock;
-  byId("mMin").value = p.min\u0633\u062a\u06c6\u06a9 || 0;
+function deleteMenuItem(id) {
+  if (!confirm("ئەم ئایتمە بسڕدرێتەوە؟")) return;
+  data.menu = data.menu.filter(i => i.id !== id);
+  saveAndRender();
 }
 
-async function deleteMenu\u0626\u0627\u06cc\u062a\u0645(id){
-  if(!confirm("\u0626\u06d5\u0645 \u0626\u0627\u06cc\u062a\u0645\u06d5 \u0628\u0633\u0695\u062f\u0631\u06ce\u062a\u06d5\u0648\u06d5\u061f")) return;
-  await deleteDoc(docRef("menu", id));
-}
+function addExpense() {
+  const title = byId("expenseTitle").value.trim();
+  const amount = Number(byId("expenseAmount").value || 0);
 
-/* CUSTOMERS */
+  if (!title || !amount) return alert("ناونیشان و بڕ پێویستن");
 
-function customersHtml(){
-  return `
-  <div class="card">
-    <h2>\u06a9\u0695\u06cc\u0627\u0631\u0627\u0646</h2>
-
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr>
-            <th>\u0646\u0627\u0648</th>
-            <th>\u0645\u06c6\u0628\u0627\u06cc\u0644</th>
-            <th>\u0633\u06d5\u0631\u062f\u0627\u0646</th>
-            <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${
-            data.customers.map(c => `
-              <tr>
-                <td>${c.name}</td>
-                <td>${c.phone}</td>
-                <td>${c.visits || 0}</td>
-                <td>${money(c.total || 0)}</td>
-              </tr>
-            `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u06a9\u0695\u06cc\u0627\u0631\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-/* EXPENSES */
-
-function expensesHtml(){
-  if(!canManage()){
-    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
-  }
-
-  return `
-  <div class="grid two">
-    <div class="card">
-      <h2>\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646\u06cc \u0645\u06d5\u0633\u0631\u0648\u0641</h2>
-
-      <label>\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646</label>
-      <input id="ex\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646">
-
-      <label>\u0628\u0695</label>
-      <input id="ex\u0628\u0695" type="number">
-
-      <button class="green" style="margin-top:12px" onclick="addExpense()">\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646</button>
-    </div>
-
-    <div class="card">
-      <h2>\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a</h2>
-      <div id="expensesBox"></div>
-    </div>
-  </div>`;
-}
-
-async function addExpense(){
-  const title = byId("ex\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646").value.trim();
-  const amount = Number(byId("ex\u0628\u0695").value || 0);
-
-  if(!title || !amount){
-    return alert("\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646 \u0648 \u0628\u0695 \u067e\u06ce\u0648\u06cc\u0633\u062a\u0646");
-  }
-
-  const id = crypto.randomUUID();
-
-  await setDoc(docRef("expenses", id), {
-    id,
+  data.expenses.unshift({
+    id: makeId("expense"),
     title,
     amount,
     date: nowISO()
   });
+
+  saveAndRender();
 }
 
-function render\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a(){
-  const box = byId("expensesBox");
-  if(!box) return;
-
-  box.innerHTML = `
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>\u06a9\u0627\u062a</th>
-          <th>\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646</th>
-          <th>\u0628\u0695</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${
-          data.expenses.slice(0,100).map(e => `
-            <tr>
-              <td>${new Date(e.date).toLocaleString()}</td>
-              <td>${e.title}</td>
-              <td>${money(e.amount)}</td>
-              <td><button class="red" onclick="deleteExpense('${e.id}')">X</button></td>
-            </tr>
-          `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0645\u06d5\u0633\u0631\u0648\u0641\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
-        }
-      </tbody>
-    </table>
-  </div>`;
+function deleteExpense(id) {
+  if (!confirm("ئەم مەسروفە بسڕدرێتەوە؟")) return;
+  data.expenses = data.expenses.filter(e => e.id !== id);
+  saveAndRender();
 }
 
-async function deleteExpense(id){
-  await deleteDoc(docRef("expenses", id));
-}
+function saveSettings() {
+  const np = byId("newAdminPass").value;
 
-/* REPORTS */
-
-function reportsHtml(){
-  const d = data.sales.filter(s => String(s.date || "").slice(0,10) === today());
-  const m = data.sales.filter(s => String(s.date || "").slice(0,7) === month());
-
-  const expD = data.expenses
-    .filter(e => String(e.date || "").slice(0,10) === today())
-    .reduce((s,e) => s + Number(e.amount || 0), 0);
-
-  const totalD = d.reduce((s,x) => s + Number(x.total || 0), 0);
-  const totalM = m.reduce((s,x) => s + Number(x.total || 0), 0);
-  const profitD = d.reduce((s,x) => s + profitOfSale(x), 0) - expD;
-  const discD = d.reduce((s,x) => s + Number(x.discount || 0), 0);
-
-  return `
-  <div class="grid four">
-    <div class="card"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0626\u06d5\u0645\u0695\u06c6</div><div class="kpi">${money(totalD)}</div></div>
-    <div class="card"><div class="muted">\u0642\u0627\u0632\u0627\u0646\u062c\u06cc \u067e\u0627\u06a9</div><div class="kpi">${money(profitD)}</div></div>
-    <div class="card"><div class="muted">\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646</div><div class="kpi">${money(discD)}</div></div>
-    <div class="card"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0645\u0627\u0646\u06af</div><div class="kpi">${money(totalM)}</div></div>
-  </div>
-
-  <div class="card" style="margin-top:14px">
-    <h2>\u062f\u0648\u0627\u06cc\u06cc\u0646 \u0648\u06d5\u0633\u0644\u06d5\u06a9\u0627\u0646</h2>
-    ${recentSalesTable(100)}
-  </div>`;
-}
-
-/* SETTINGS */
-
-function settingsHtml(){
-  if(!can\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646()){
-    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
-  }
-
-  return `
-  <div class="grid two">
-    <div class="card">
-      <h2>\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646</h2>
-
-      <label>\u0646\u0627\u0648\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a</label>
-      <input id="restaurant\u0646\u0627\u0648" value="${data.user.restaurant\u0646\u0627\u0648}">
-
-      <label>\u0645\u06c6\u0628\u0627\u06cc\u0644</label>
-      <input id="phone" value="${data.user.phone}">
-
-      <div class="row">
-        <div>
-          <label>\u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc %</label>
-          <input id="servicePercent" type="number" value="${data.user.servicePercent}">
-        </div>
-
-        <div>
-          <label>\u0628\u0627\u062c %</label>
-          <input id="taxPercent" type="number" value="${data.user.taxPercent}">
-        </div>
-      </div>
-
-      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u06a9\u0627\u067e\u062a\u0646</label>
-      <input id="captain\u067e\u0627\u0633\u06c6\u0631\u062f" type="password" value="${data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f}">
-
-      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</label>
-      <input id="kitchen\u067e\u0627\u0633\u06c6\u0631\u062f" type="password" value="${data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f}">
-
-      <label>\u062a\u06ce\u0628\u06cc\u0646\u06cc \u0648\u06d5\u0633\u0644</label>
-      <input id="receiptNote" value="${data.user.receiptNote}">
-
-      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0646\u0648\u06ce\u06cc \u06a9\u0627\u0634\u06ce\u0631</label>
-      <input id="newPass" type="password" placeholder="\u0628\u06d5\u062a\u0627\u06b5\u06cc \u0628\u0647\u06ce\u06b5\u06d5 \u0626\u06d5\u06af\u06d5\u0631 \u0646\u0627\u06af\u06c6\u0695\u06cc\u062a">
-
-      <button class="green" style="margin-top:12px" onclick="save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646</button>
-    </div>
-
-    <div class="card">
-      <h2>\u0628\u0627\u06a9\u06d5\u067e</h2>
-
-      <div class="actions">
-        <button class="blue" onclick="export\u0628\u0627\u06a9\u06d5\u067e()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646\u06cc \u0628\u0627\u06a9\u06d5\u067e</button>
-      </div>
-
-      <p class="muted">\u0628\u0627\u06a9\u06d5\u067e \u0628\u06d5 \u0634\u06ce\u0648\u06d5\u06cc \u0628\u06d5\u0631\u062f\u06d5\u0648\u0627\u0645 \u0628\u06a9\u06d5.</p>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:14px">
-    <h2>\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646</h2>
-
-    <div class="row">
-      <input id="newTable\u0646\u0627\u0648" placeholder="\u0645\u06ce\u0632\u06cc 7">
-      <button class="green" onclick="addTable()">\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646</button>
-    </div>
-
-    <div class="tablewrap" style="margin-top:12px">
-      <table>
-        <thead>
-          <tr>
-            <th>\u0646\u0627\u0648</th>
-            <th>\u062f\u06c6\u062e</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${
-            data.tables.map(t => `
-              <tr>
-                <td>${t.name}</td>
-                <td>${t.status}</td>
-                <td><button class="red" onclick="deleteTable('${t.id}')">\u0633\u0695\u06cc\u0646\u06d5\u0648\u06d5</button></td>
-              </tr>
-            `).join("")
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-async function save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646(){
-  const u = Object.assign({}, data.user, {
-    restaurant\u0646\u0627\u0648: byId("restaurant\u0646\u0627\u0648").value.trim() || "\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a",
-    phone: byId("phone").value.trim(),
+  data.user = {
+    ...data.user,
+    restaurantName: byId("restaurantName").value.trim() || DEFAULTS.user.restaurantName,
+    phone: byId("restaurantPhone").value.trim(),
     servicePercent: Number(byId("servicePercent").value || 0),
     taxPercent: Number(byId("taxPercent").value || 0),
-    captain\u067e\u0627\u0633\u06c6\u0631\u062f: byId("captain\u067e\u0627\u0633\u06c6\u0631\u062f").value.trim() || data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f || "1111",
-    kitchen\u067e\u0627\u0633\u06c6\u0631\u062f: byId("kitchen\u067e\u0627\u0633\u06c6\u0631\u062f").value.trim() || data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f || "2222",
-    receiptNote: byId("receiptNote").value.trim() || "\u0633\u0648\u067e\u0627\u0633 \u0628\u06c6 \u0633\u06d5\u0631\u062f\u0627\u0646\u062a\u0627\u0646"
-  });
+    captainPassword: byId("captainPass").value.trim() || "1111",
+    kitchenPassword: byId("kitchenPass").value.trim() || "2222",
+    receiptNote: byId("receiptNote").value.trim() || DEFAULTS.user.receiptNote
+  };
 
-  const np = byId("newPass").value;
-  if(np){
-    u.password = np;
-  }
+  if (np) data.user.password = np;
 
-  await setDoc(settingsRef(), clean(u), { merge:true });
-
-  alert("\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646\u06d5\u06a9\u0627\u0646 \u0647\u06d5\u06b5\u06af\u06cc\u0631\u0627\u0646");
+  saveAndRender();
+  alert("ڕێکخستنەکان هەڵگیران");
 }
 
-async function addTable(){
-  const name = byId("newTable\u0646\u0627\u0648").value.trim();
+function addTable() {
+  const name = byId("newTableName").value.trim();
+  if (!name) return alert("ناوی مێز بنووسە");
 
-  if(!name){
-    return alert("\u0646\u0627\u0648\u06cc \u0645\u06ce\u0632 \u0628\u0646\u0648\u0648\u0633\u06d5");
-  }
-
-  const id = crypto.randomUUID();
-
-  await setDoc(docRef("tables", id), {
-    id,
+  data.tables.push({
+    id: makeId("table"),
     name,
-    status:"\u0628\u06d5\u062a\u0627\u06b5",
-    sort:Date.now()
+    status: "empty",
+    sort: Date.now()
   });
+
+  saveAndRender();
 }
 
-async function deleteTable(id){
-  if(order(id).items.length){
-    return alert("\u0633\u06d5\u0631\u06d5\u062a\u0627 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u0626\u06d5\u0645 \u0645\u06ce\u0632\u06d5 \u067e\u0627\u06a9 \u0628\u06a9\u06d5\u0648\u06d5");
+function deleteTable(id) {
+  if ((getOrder(id).items || []).length) {
+    return alert("سەرەتا ئۆردەری ئەم مێزە پاک بکەرەوە");
   }
 
-  await deleteDoc(docRef("tables", id));
-  await deleteDoc(docRef("orders", id));
+  if (!confirm("ئەم مێزە بسڕدرێتەوە؟")) return;
+
+  data.tables = data.tables.filter(t => t.id !== id);
+  delete data.orders[id];
+
+  saveAndRender();
 }
 
-function export\u0628\u0627\u06a9\u06d5\u067e(){
-  const blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
+function exportBackup() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "restaurant-pos-cloud-backup.json";
+  a.download = "restaurant-pos-backup.json";
   a.click();
 }
-
-/* GLOBAL FUNCTIONS */
 
 Object.assign(window, {
   login,
   logout,
   go,
   selectTable,
-  reserveTable,
-  set\u062c\u06c6\u0631,
-  set\u062f\u06c6\u062e,
-  set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646,
-  setNote,
-  set\u06a9\u0695\u06cc\u0627\u0631Info,
-  renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646,
-  add\u0626\u0627\u06cc\u062a\u0645,
-  set\u062f\u0627\u0646\u06d5,
-  remove\u0626\u0627\u06cc\u062a\u0645,
+  setSelectedCategory,
+  setMenuSearch,
+  toggleReserve,
+  setOrderField,
+  addItem,
+  setItemQty,
+  removeItem,
   clearOrder,
   checkout,
-  saveMenu\u0626\u0627\u06cc\u062a\u0645,
-  editMenu\u0626\u0627\u06cc\u062a\u0645,
-  deleteMenu\u0626\u0627\u06cc\u062a\u0645,
+  newMenuItem,
+  editMenuItem,
+  saveMenuItem,
+  deleteMenuItem,
   addExpense,
   deleteExpense,
-  save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646,
+  saveSettings,
   addTable,
   deleteTable,
-  export\u0628\u0627\u06a9\u06d5\u067e,
-  state,
-  byId
+  exportBackup
 });
 
-init();
+loadData();
+renderLoading();
+setTimeout(render, 150);
