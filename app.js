@@ -1,3 +1,4 @@
+// Restaurant POS Cloud - Kurdish Unicode-safe version v26
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getFirestore, doc, collection, setDoc, getDoc, getDocs, deleteDoc,
@@ -24,31 +25,31 @@ const DEFAULT = {
   user: {
     username: "admin",
     password: "1234",
-    captainPassword: "1111",
-    kitchenPassword: "2222",
-    restaurantName: "Restaurant POS Cloud",
+    captain\u067e\u0627\u0633\u06c6\u0631\u062f: "1111",
+    kitchen\u067e\u0627\u0633\u06c6\u0631\u062f: "2222",
+    restaurant\u0646\u0627\u0648: "\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a",
     phone: "0770 000 0000",
     servicePercent: 0,
     taxPercent: 0,
-    receiptNote: "Thank you for visiting us"
+    receiptNote: "\u0633\u0648\u067e\u0627\u0633 \u0628\u06c6 \u0633\u06d5\u0631\u062f\u0627\u0646\u062a\u0627\u0646"
   },
   tables: [
-    { id:"T1", name:"Table 1", status:"free", sort:1 },
-    { id:"T2", name:"Table 2", status:"free", sort:2 },
-    { id:"T3", name:"Table 3", status:"free", sort:3 },
-    { id:"T4", name:"Table 4", status:"free", sort:4 },
-    { id:"T5", name:"Table 5", status:"free", sort:5 },
-    { id:"T6", name:"Table 6", status:"free", sort:6 },
-    { id:"TA", name:"Takeaway", status:"free", sort:7 },
-    { id:"DL", name:"Delivery", status:"free", sort:8 }
+    { id:"T1", name:"\u0645\u06ce\u0632\u06cc 1", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:1 },
+    { id:"T2", name:"\u0645\u06ce\u0632\u06cc 2", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:2 },
+    { id:"T3", name:"\u0645\u06ce\u0632\u06cc 3", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:3 },
+    { id:"T4", name:"\u0645\u06ce\u0632\u06cc 4", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:4 },
+    { id:"T5", name:"\u0645\u06ce\u0632\u06cc 5", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:5 },
+    { id:"T6", name:"\u0645\u06ce\u0632\u06cc 6", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:6 },
+    { id:"TA", name:"\u0633\u06d5\u0641\u06d5\u0631\u06cc", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:7 },
+    { id:"DL", name:"\u06af\u06d5\u06cc\u0627\u0646\u062f\u0646", status:"\u0628\u06d5\u062a\u0627\u06b5", sort:8 }
   ],
   menu: [
-    { id:"F001", code:"F001", name:"Burger", category:"Food", price:5000, cost:3000, stock:50, minStock:5, sort:1 },
-    { id:"F002", code:"F002", name:"Pizza", category:"Food", price:7000, cost:4200, stock:40, minStock:5, sort:2 },
-    { id:"F003", code:"F003", name:"Chicken", category:"Food", price:8000, cost:5000, stock:35, minStock:5, sort:3 },
-    { id:"D001", code:"D001", name:"Water", category:"Drinks", price:500, cost:250, stock:100, minStock:15, sort:4 },
-    { id:"D002", code:"D002", name:"Pepsi", category:"Drinks", price:1000, cost:650, stock:80, minStock:10, sort:5 },
-    { id:"S001", code:"S001", name:"Dessert", category:"Dessert", price:3500, cost:1800, stock:25, minStock:5, sort:6 }
+    { id:"F001", code:"F001", name:"\u0628\u06d5\u0631\u06af\u06d5\u0631", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:5000, cost:3000, stock:50, min\u0633\u062a\u06c6\u06a9:5, sort:1 },
+    { id:"F002", code:"F002", name:"\u067e\u06cc\u062a\u0632\u0627", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:7000, cost:4200, stock:40, min\u0633\u062a\u06c6\u06a9:5, sort:2 },
+    { id:"F003", code:"F003", name:"\u0645\u0631\u06cc\u0634\u06a9", category:"\u062e\u0648\u0627\u0631\u062f\u0646", price:8000, cost:5000, stock:35, min\u0633\u062a\u06c6\u06a9:5, sort:3 },
+    { id:"D001", code:"D001", name:"\u0626\u0627\u0648", category:"\u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5", price:500, cost:250, stock:100, min\u0633\u062a\u06c6\u06a9:15, sort:4 },
+    { id:"D002", code:"D002", name:"\u067e\u06ce\u067e\u0633\u06cc", category:"\u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5", price:1000, cost:650, stock:80, min\u0633\u062a\u06c6\u06a9:10, sort:5 },
+    { id:"S001", code:"S001", name:"\u0634\u06cc\u0631\u06cc\u0646\u06cc", category:"\u0634\u06cc\u0631\u06cc\u0646\u06cc", price:3500, cost:1800, stock:25, min\u0633\u062a\u06c6\u06a9:5, sort:6 }
   ]
 };
 
@@ -66,8 +67,8 @@ let state = {
   page: "dashboard",
   logged: false,
   role: "",
-  selectedTable: null,
-  editingItem: null,
+  selected\u0645\u06ce\u0632: null,
+  editing\u0626\u0627\u06cc\u062a\u0645: null,
   selectedCat: "",
   ready: false,
   error: ""
@@ -95,18 +96,18 @@ function newOrder(tableId){
     type: "dinein",
     status: "open",
     note: "",
-    customerName: "",
-    customerPhone: "",
+    customer\u0646\u0627\u0648: "",
+    customer\u0645\u06c6\u0628\u0627\u06cc\u0644: "",
     created: nowISO(),
     updated: nowISO()
   };
 }
 
 function order(id){ return data.orders[id] || newOrder(id); }
-function itemsTotal(o){ return (o.items || []).reduce((s,i) => s + Number(i.qty || 0) * Number(i.price || 0), 0); }
-function serviceAmount(o){ return Math.round(itemsTotal(o) * Number(data.user.servicePercent || 0) / 100); }
-function taxAmount(o){ return Math.round((itemsTotal(o) + serviceAmount(o) - Number(o.discount || 0)) * Number(data.user.taxPercent || 0) / 100); }
-function orderTotal(o){ return Math.max(0, itemsTotal(o) + serviceAmount(o) + taxAmount(o) - Number(o.discount || 0)); }
+function items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o){ return (o.items || []).reduce((s,i) => s + Number(i.qty || 0) * Number(i.price || 0), 0); }
+function service\u0628\u0695(o){ return Math.round(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) * Number(data.user.servicePercent || 0) / 100); }
+function tax\u0628\u0695(o){ return Math.round((items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) + service\u0628\u0695(o) - Number(o.discount || 0)) * Number(data.user.taxPercent || 0) / 100); }
+function order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o){ return Math.max(0, items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o) + service\u0628\u0695(o) + tax\u0628\u0695(o) - Number(o.discount || 0)); }
 
 function profitOfSale(s){
   return (s.items || []).reduce((a,i) => a + (Number(i.price || 0) - Number(i.cost || 0)) * Number(i.qty || 0), 0)
@@ -116,7 +117,7 @@ function profitOfSale(s){
 }
 
 function canManage(){ return state.role === "admin" || state.role === "cashier"; }
-function canSettings(){ return state.role === "admin"; }
+function can\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646(){ return state.role === "admin"; }
 
 async function ensureInitialData(){
   const s = await getDoc(settingsRef());
@@ -203,7 +204,7 @@ async function init(){
 }
 
 function renderLoading(){
-  byId("app").innerHTML = `<div class="loading">Loading Restaurant POS Cloud...</div>`;
+  byId("app").innerHTML = `<div class="loading">Loading \u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a...</div>`;
 }
 
 function render(){
@@ -213,9 +214,9 @@ function render(){
     app.innerHTML = `
     <div class="app">
       <div class="card" style="margin:40px auto;max-width:760px">
-        <h2>Firebase problem</h2>
+        <h2>\u06a9\u06ce\u0634\u06d5\u06cc Firebase</h2>
         <div class="errorbox">${state.error}</div>
-        <p class="muted">Usually this means Firestore Database or Rules are not ready.</p>
+        <p class="muted">\u0632\u06c6\u0631\u062c\u0627\u0631 \u0626\u06d5\u0645\u06d5 \u0648\u0627\u062a\u06d5 Firestore Database \u06cc\u0627\u0646 Rules \u0626\u0627\u0645\u0627\u062f\u06d5 \u0646\u06cc\u0646.</p>
       </div>
     </div>`;
     return;
@@ -229,44 +230,44 @@ function render(){
   if(!state.logged){
     app.innerHTML = `
     <div class="login card">
-      <div class="logo">ð½ï¸</div>
-      <h2>Login</h2>
-      <p class="muted">Restaurant POS Cloud Sync</p>
-      <div class="slogan">Captain, Cashier and Kitchen can see the same orders in realtime</div>
+      <div class="logo">POS</div>
+      <h2>\u0686\u0648\u0648\u0646\u06d5\u0698\u0648\u0648\u0631\u06d5\u0648\u06d5</h2>
+      <p class="muted">\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a - Cloud Sync</p>
+      <div class="slogan">\u06a9\u0627\u067e\u062a\u0646\u060c \u06a9\u0627\u0634\u06ce\u0631 \u0648 \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5 \u0647\u06d5\u0645\u0627\u0646 \u0626\u06c6\u0631\u062f\u06d5\u0631 \u0628\u06d5 \u0695\u0627\u0633\u062a\u06d5\u0648\u062e\u06c6 \u062f\u06d5\u0628\u06cc\u0646\u0646</div>
 
-      <label>Username</label>
+      <label>\u0646\u0627\u0648\u06cc \u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631</label>
       <input id="loginUser" value="admin">
 
-      <label>Password</label>
+      <label>\u067e\u0627\u0633\u06c6\u0631\u062f</label>
       <input id="loginPass" type="password" value="">
 
-      <label>Role</label>
-      <select id="loginRole">
-        <option value="admin">Admin / Cashier</option>
+      <label>\u0695\u06c6\u06b5</label>
+      <select id="login\u0695\u06c6\u06b5">
+        <option value="admin">\u0626\u06d5\u062f\u0645\u06cc\u0646 / \u06a9\u0627\u0634\u06ce\u0631</option>
         <option value="cashier">Cashier</option>
-        <option value="captain">Captain iPad</option>
-        <option value="kitchen">Kitchen Screen</option>
+        <option value="captain">\u06a9\u0627\u067e\u062a\u0646</option>
+        <option value="kitchen">\u0634\u0627\u0634\u06d5\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</option>
       </select>
 
-      <button onclick="login()" style="margin-top:12px">Login</button>
-      <p class="muted small">Enter the password for your role to continue</p>
+      <button onclick="login()" style="margin-top:12px">\u0686\u0648\u0648\u0646\u06d5\u0698\u0648\u0648\u0631\u06d5\u0648\u06d5</button>
+      <p class="muted small">\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0695\u06c6\u06b5\u06d5\u06a9\u06d5\u062a \u0628\u0646\u0648\u0648\u0633\u06d5 \u0628\u06c6 \u0628\u06d5\u0631\u062f\u06d5\u0648\u0627\u0645\u0628\u0648\u0648\u0646</p>
     </div>`;
     return;
   }
 
   const navs = state.role === "captain"
-    ? `${nav("orders","ð Captain Orders")}`
+    ? `${nav("orders","\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0627\u067e\u062a\u0646")}`
     : state.role === "kitchen"
-      ? `${nav("kitchen","ð¨âð³ Kitchen")}`
-      : `${nav("dashboard","ð  Dashboard")}${nav("orders","ðª Tables / Orders")}${nav("kitchen","ð¨âð³ Kitchen")}${nav("menu","ð Menu / Stock")}${nav("customers","ð¥ Customers")}${nav("expenses","ð¸ Expenses")}${nav("reports","ð Reports")}${nav("settings","âï¸ Settings")}`;
+      ? `${nav("kitchen","\u0628\u06d5\u0634\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5")}`
+      : `${nav("dashboard","\u062f\u0627\u0634\u0628\u06c6\u0631\u062f")}${nav("orders","\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646 / \u0626\u06c6\u0631\u062f\u06d5\u0631")}${nav("kitchen","\u0628\u06d5\u0634\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5")}${nav("menu","\u0645\u06cc\u0646\u06cc\u0648 / \u0633\u062a\u06c6\u06a9")}${nav("customers","\u06a9\u0695\u06cc\u0627\u0631\u0627\u0646")}${nav("expenses","\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a")}${nav("reports","\u0695\u0627\u067e\u06c6\u0631\u062a\u06d5\u06a9\u0627\u0646")}${nav("settings","\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646")}`;
 
   app.innerHTML = `
   <div class="app">
     <div class="topbar">
-      <div class="brand">ð½ï¸ ${data.user.restaurantName} <span class="badge blue">${state.role}</span></div>
+      <div class="brand">POS ${data.user.restaurant\u0646\u0627\u0648} <span class="badge blue">${state.role}</span></div>
       <div class="actions">
         <span class="badge">${new Date().toLocaleDateString()}</span>
-        <button class="secondary" onclick="logout()">Logout</button>
+        <button class="secondary" onclick="logout()">\u0686\u0648\u0648\u0646\u06d5\u062f\u06d5\u0631\u06d5\u0648\u06d5</button>
       </div>
     </div>
 
@@ -293,9 +294,9 @@ function go(p){
 function login(){
   const u = byId("loginUser").value.trim();
   const p = byId("loginPass").value;
-  const role = byId("loginRole").value;
+  const role = byId("login\u0695\u06c6\u06b5").value;
 
-  if(role === "captain" && p === String(data.user.captainPassword || "1111")){
+  if(role === "captain" && p === String(data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f || "1111")){
     state.logged = true;
     state.role = "captain";
     state.page = "orders";
@@ -303,7 +304,7 @@ function login(){
     return;
   }
 
-  if(role === "kitchen" && p === String(data.user.kitchenPassword || "2222")){
+  if(role === "kitchen" && p === String(data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f || "2222")){
     state.logged = true;
     state.role = "kitchen";
     state.page = "kitchen";
@@ -319,7 +320,7 @@ function login(){
     return;
   }
 
-  alert("Wrong username or password");
+  alert("\u0646\u0627\u0648\u06cc \u0628\u06d5\u06a9\u0627\u0631\u0647\u06ce\u0646\u06d5\u0631 \u06cc\u0627\u0646 \u067e\u0627\u0633\u06c6\u0631\u062f \u0647\u06d5\u06b5\u06d5\u06cc\u06d5");
 }
 
 function logout(){
@@ -342,7 +343,7 @@ function pageHtml(){
 
 function afterRender(){
   if(state.page === "orders"){
-    renderTables();
+    render\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646();
     renderOrderBox();
   }
 
@@ -351,7 +352,7 @@ function afterRender(){
   }
 
   if(state.page === "expenses"){
-    renderExpenses();
+    render\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a();
   }
 }
 
@@ -370,29 +371,29 @@ function dashboardHtml(){
 
   return `
   <div class="grid four">
-    <div class="card glass"><div class="muted">Today Sales</div><div class="kpi">${money(total)}</div></div>
-    <div class="card glass"><div class="muted">Net Profit</div><div class="kpi">${money(profit)}</div></div>
-    <div class="card glass"><div class="muted">Open Orders</div><div class="kpi">${openOrders}</div></div>
-    <div class="card glass"><div class="muted">Month Sales</div><div class="kpi">${money(m.reduce((s,x) => s + Number(x.total || 0), 0))}</div></div>
+    <div class="card glass"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0626\u06d5\u0645\u0695\u06c6</div><div class="kpi">${money(total)}</div></div>
+    <div class="card glass"><div class="muted">\u0642\u0627\u0632\u0627\u0646\u062c\u06cc \u067e\u0627\u06a9</div><div class="kpi">${money(profit)}</div></div>
+    <div class="card glass"><div class="muted">\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0631\u0627\u0648\u06d5</div><div class="kpi">${openOrders}</div></div>
+    <div class="card glass"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0645\u0627\u0646\u06af</div><div class="kpi">${money(m.reduce((s,x) => s + Number(x.total || 0), 0))}</div></div>
   </div>
 
   <div class="grid two" style="margin-top:14px">
-    <div class="card"><h2>Low Stock</h2>${lowStockTable()}</div>
-    <div class="card"><h2>Recent Receipts</h2>${recentSalesTable(8)}</div>
+    <div class="card"><h2>\u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645</h2>${low\u0633\u062a\u06c6\u06a9Table()}</div>
+    <div class="card"><h2>\u062f\u0648\u0627\u06cc\u06cc\u0646 \u0648\u06d5\u0633\u0644\u06d5\u06a9\u0627\u0646</h2>${recentSalesTable(8)}</div>
   </div>`;
 }
 
-function lowStockTable(){
+function low\u0633\u062a\u06c6\u06a9Table(){
   const rows = data.menu
-    .filter(i => Number(i.stock) <= Number(i.minStock))
-    .map(i => `<tr><td>${i.name}</td><td>${i.stock}</td><td>${i.minStock}</td></tr>`)
+    .filter(i => Number(i.stock) <= Number(i.min\u0633\u062a\u06c6\u06a9))
+    .map(i => `<tr><td>${i.name}</td><td>${i.stock}</td><td>${i.min\u0633\u062a\u06c6\u06a9}</td></tr>`)
     .join("");
 
   return `
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Item</th><th>Stock</th><th>Alert</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="3" class="muted">No low stock items</td></tr>'}</tbody>
+      <thead><tr><th>\u0626\u0627\u06cc\u062a\u0645</th><th>\u0633\u062a\u06c6\u06a9</th><th>\u0626\u0627\u06af\u0627\u062f\u0627\u0631\u06cc</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="3" class="muted">\u0647\u06cc\u0686 \u0626\u0627\u06cc\u062a\u0645\u06ce\u06a9 \u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645 \u0646\u06cc\u06cc\u06d5</td></tr>'}</tbody>
     </table>
   </div>`;
 }
@@ -401,7 +402,7 @@ function recentSalesTable(n){
   return `
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Time</th><th>Type</th><th>Total</th></tr></thead>
+      <thead><tr><th>\u06a9\u0627\u062a</th><th>\u062c\u06c6\u0631</th><th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th></tr></thead>
       <tbody>
         ${
           data.sales.slice(0,n).map(s => `
@@ -410,7 +411,7 @@ function recentSalesTable(n){
               <td>${s.type || ""}</td>
               <td>${money(s.total)}</td>
             </tr>
-          `).join("") || '<tr><td colspan="3" class="muted">No sales yet</td></tr>'
+          `).join("") || '<tr><td colspan="3" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0641\u0631\u06c6\u0634\u062a\u0646\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
         }
       </tbody>
     </table>
@@ -423,18 +424,18 @@ function ordersHtml(){
   return `
   <div class="grid two">
     <div class="card">
-      <h2>${state.role === "captain" ? "Captain Orders" : "Tables / Orders"}</h2>
+      <h2>${state.role === "captain" ? "\u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u06a9\u0627\u067e\u062a\u0646" : "\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646 / \u0626\u06c6\u0631\u062f\u06d5\u0631"}</h2>
       <div id="tablesGrid" class="tablegrid"></div>
     </div>
 
     <div class="card">
-      <h2>Order Details</h2>
+      <h2>\u0648\u0631\u062f\u06d5\u06a9\u0627\u0631\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</h2>
       <div id="orderBox"></div>
     </div>
   </div>`;
 }
 
-function renderTables(){
+function render\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646(){
   const box = byId("tablesGrid");
   if(!box) return;
 
@@ -446,15 +447,15 @@ function renderTables(){
     return `
     <div class="tablecard ${cls} ${state.selectedTable === t.id ? "active" : ""}">
       <h3>${t.name}</h3>
-      <span class="badge ${has ? "green" : ""}">${has ? o.status : "free"}</span>
-      <div class="muted">Items: ${(o.items || []).length}</div>
-      <div class="muted">Discount: ${money(o.discount || 0)}</div>
-      <b>${money(orderTotal(o))}</b>
+      <span class="badge ${has ? "green" : ""}">${has ? o.status : "\u0628\u06d5\u062a\u0627\u06b5"}</span>
+      <div class="muted">\u0626\u0627\u06cc\u062a\u0645\u06d5\u06a9\u0627\u0646: ${(o.items || []).length}</div>
+      <div class="muted">\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}</div>
+      <b>${money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))}</b>
 
       <div class="actions">
-        <button class="blue" onclick="selectTable('${t.id}')">Open</button>
-        ${canManage() && has ? `<button class="red" onclick="checkout('${t.id}')">Receipt</button>` : ""}
-        ${canManage() && !has ? `<button class="amber" onclick="reserveTable('${t.id}')">Reserve</button>` : ""}
+        <button class="blue" onclick="selectTable('${t.id}')">\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</button>
+        ${canManage() && has ? `<button class="red" onclick="checkout('${t.id}')">\u0648\u06d5\u0633\u0644</button>` : ""}
+        ${canManage() && !has ? `<button class="amber" onclick="reserveTable('${t.id}')">\u0695\u06cc\u0632\u06ce\u0631\u06a4</button>` : ""}
       </div>
     </div>`;
   }).join("");
@@ -467,13 +468,13 @@ function selectTable(id){
 
 async function reserveTable(id){
   if(!canManage()){
-    return alert("Only cashier can reserve tables");
+    return alert("\u062a\u06d5\u0646\u0647\u0627 \u06a9\u0627\u0634\u06ce\u0631 \u062f\u06d5\u062a\u0648\u0627\u0646\u06ce\u062a \u0645\u06ce\u0632 \u0695\u06cc\u0632\u06ce\u0631\u06a4 \u0628\u06a9\u0627\u062a");
   }
 
   const t = tableById(id);
   await setDoc(
     docRef("tables", id),
-    clean(Object.assign({}, t, { status: t.status === "reserved" ? "free" : "reserved" })),
+    clean(Object.assign({}, t, { status: t.status === "reserved" ? "\u0628\u06d5\u062a\u0627\u06b5" : "reserved" })),
     { merge:true }
   );
 }
@@ -483,28 +484,28 @@ async function saveOrder(o){
   await setDoc(docRef("orders", o.tableId), clean(o));
 }
 
-async function updateTableStatus(id,status){
+async function updateTable\u062f\u06c6\u062e(id,status){
   const t = tableById(id) || { id };
   await setDoc(docRef("tables", id), clean(Object.assign({}, t, { status })), { merge:true });
 }
 
-function setType(id,v){
+function set\u062c\u06c6\u0631(id,v){
   const o = order(id);
   o.type = v;
   saveOrder(o);
 }
 
-function setStatus(id,v){
+function set\u062f\u06c6\u062e(id,v){
   const o = order(id);
   o.status = v;
   saveOrder(o);
 }
 
-function setDiscount(id,v){
+function set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646(id,v){
   const o = order(id);
   o.discount = Math.max(0, Number(v || 0));
   saveOrder(o);
-  updateOrderTotal(id);
+  updateOrder\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(id);
 }
 
 function setNote(id,v){
@@ -513,22 +514,22 @@ function setNote(id,v){
   saveOrder(o);
 }
 
-function setCustomerInfo(id,field,v){
+function set\u06a9\u0695\u06cc\u0627\u0631Info(id,field,v){
   const o = order(id);
   o[field] = v;
   saveOrder(o);
 }
 
-function updateOrderTotal(id){
+function updateOrder\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(id){
   const o = order(id);
 
   const k = byId("orderKpi");
-  if(k) k.textContent = money(orderTotal(o));
+  if(k) k.textContent = money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o));
 
   const line = byId("orderSummary");
   if(line){
     line.textContent =
-      `Subtotal: ${money(itemsTotal(o))} | Service: ${money(serviceAmount(o))} | Tax: ${money(taxAmount(o))} | Discount: ${money(o.discount || 0)}`;
+      `\u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))} | \u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(service\u0628\u0695(o))} | \u0628\u0627\u062c: ${money(tax\u0628\u0695(o))} | \u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}`;
   }
 }
 
@@ -537,7 +538,7 @@ function renderOrderBox(){
   if(!box) return;
 
   if(!state.selectedTable){
-    box.innerHTML = `<p class="muted">Choose a table first.</p>`;
+    box.innerHTML = `<p class="muted">\u0633\u06d5\u0631\u06d5\u062a\u0627 \u0645\u06ce\u0632\u06ce\u06a9 \u0647\u06d5\u06b5\u0628\u0698\u06ce\u0631\u06d5.</p>`;
     return;
   }
 
@@ -547,81 +548,81 @@ function renderOrderBox(){
   box.innerHTML = `
   <h3>${t.name}</h3>
 
-  <div id="orderKpi" class="kpi">${money(orderTotal(o))}</div>
+  <div id="orderKpi" class="kpi">${money(order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))}</div>
 
   <p id="orderSummary" class="muted">
-    Subtotal: ${money(itemsTotal(o))} |
-    Service: ${money(serviceAmount(o))} |
-    Tax: ${money(taxAmount(o))} |
-    Discount: ${money(o.discount || 0)}
+    \u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o))} |
+    \u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(service\u0628\u0695(o))} |
+    \u0628\u0627\u062c: ${money(tax\u0628\u0695(o))} |
+    \u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(o.discount || 0)}
   </p>
 
   <div class="row">
     <div>
-      <label>Order Type</label>
-      <select onchange="setType('${t.id}',this.value)">
-        <option ${o.type === 'dinein' ? 'selected' : ''} value="dinein">Dine-in</option>
-        <option ${o.type === 'takeaway' ? 'selected' : ''} value="takeaway">Takeaway</option>
-        <option ${o.type === 'delivery' ? 'selected' : ''} value="delivery">Delivery</option>
+      <label>\u062c\u06c6\u0631\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</label>
+      <select onchange="set\u062c\u06c6\u0631('${t.id}',this.value)">
+        <option ${o.type === 'dinein' ? 'selected' : ''} value="dinein">\u0644\u06d5\u0646\u0627\u0648 \u0647\u06c6\u06b5</option>
+        <option ${o.type === 'takeaway' ? 'selected' : ''} value="takeaway">\u0633\u06d5\u0641\u06d5\u0631\u06cc</option>
+        <option ${o.type === 'delivery' ? 'selected' : ''} value="delivery">\u06af\u06d5\u06cc\u0627\u0646\u062f\u0646</option>
       </select>
     </div>
 
     <div>
-      <label>Status</label>
-      <select onchange="setStatus('${t.id}',this.value)">
-        <option ${o.status === 'open' ? 'selected' : ''} value="open">Open</option>
-        <option ${o.status === 'kitchen' ? 'selected' : ''} value="kitchen">Kitchen</option>
-        <option ${o.status === 'ready' ? 'selected' : ''} value="ready">Ready</option>
+      <label>\u062f\u06c6\u062e</label>
+      <select onchange="set\u062f\u06c6\u062e('${t.id}',this.value)">
+        <option ${o.status === 'open' ? 'selected' : ''} value="open">\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</option>
+        <option ${o.status === 'kitchen' ? 'selected' : ''} value="kitchen">\u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</option>
+        <option ${o.status === 'ready' ? 'selected' : ''} value="ready">\u0626\u0627\u0645\u0627\u062f\u06d5\u06cc\u06d5</option>
       </select>
     </div>
   </div>
 
   <div class="row">
     <div>
-      <label>Customer</label>
-      <input value="${o.customerName || ''}" oninput="setCustomerInfo('${t.id}','customerName',this.value)">
+      <label>\u06a9\u0695\u06cc\u0627\u0631</label>
+      <input value="${o.customer\u0646\u0627\u0648 || ''}" oninput="set\u06a9\u0695\u06cc\u0627\u0631Info('${t.id}','customer\u0646\u0627\u0648',this.value)">
     </div>
 
     <div>
-      <label>Phone</label>
-      <input value="${o.customerPhone || ''}" oninput="setCustomerInfo('${t.id}','customerPhone',this.value)">
+      <label>\u0645\u06c6\u0628\u0627\u06cc\u0644</label>
+      <input value="${o.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || ''}" oninput="set\u06a9\u0695\u06cc\u0627\u0631Info('${t.id}','customer\u0645\u06c6\u0628\u0627\u06cc\u0644',this.value)">
     </div>
   </div>
 
   ${
     canManage()
     ? `<div class="paybox">
-        <label>Discount</label>
-        <input type="number" min="0" value="${o.discount || 0}" oninput="setDiscount('${t.id}',this.value)">
+        <label>\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646</label>
+        <input type="number" min="0" value="${o.discount || 0}" oninput="set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646('${t.id}',this.value)">
       </div>`
     : ""
   }
 
-  <label>Order Note</label>
+  <label>\u062a\u06ce\u0628\u06cc\u0646\u06cc \u0626\u06c6\u0631\u062f\u06d5\u0631</label>
   <textarea class="order-note" oninput="setNote('${t.id}',this.value)">${o.note || ''}</textarea>
 
   <div class="categorybar">
-    <button class="secondary" onclick="state.selectedCat='';renderMenuToAdd()">All</button>
+    <button class="secondary" onclick="state.selectedCat='';renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">\u0647\u06d5\u0645\u0648\u0648</button>
     ${
       [...new Set(data.menu.map(i => i.category || "Other"))]
-      .map(c => `<button class="secondary" onclick="state.selectedCat='${c}';renderMenuToAdd()">${c}</button>`)
+      .map(c => `<button class="secondary" onclick="state.selectedCat='${c}';renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">${c}</button>`)
       .join("")
     }
   </div>
 
-  <input id="menuSearch" placeholder="Search item or code..." oninput="renderMenuToAdd()">
+  <input id="menuSearch" placeholder="\u06af\u06d5\u0695\u0627\u0646 \u0628\u06d5 \u0646\u0627\u0648 \u06cc\u0627\u0646 \u06a9\u06c6\u062f..." oninput="renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646()">
 
-  <div id="menuToAdd" class="menugrid"></div>
+  <div id="menuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646" class="menugrid"></div>
 
-  <h3>Items</h3>
+  <h3>\u0626\u0627\u06cc\u062a\u0645\u06d5\u06a9\u0627\u0646</h3>
 
   <div class="tablewrap">
     <table>
       <thead>
         <tr>
-          <th>Item</th>
-          <th>Qty</th>
-          <th>Total</th>
+          <th>\u0626\u0627\u06cc\u062a\u0645</th>
+          <th>\u062f\u0627\u0646\u06d5</th>
+          <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
           <th></th>
         </tr>
       </thead>
@@ -637,35 +638,35 @@ function renderOrderBox(){
                   type="number"
                   min="1"
                   value="${i.qty}"
-                  onchange="setQty('${t.id}',${idx},this.value)"
+                  onchange="set\u062f\u0627\u0646\u06d5('${t.id}',${idx},this.value)"
                 >
               </td>
               <td>${money(i.qty * i.price)}</td>
               <td>
-                <button class="red" onclick="removeItem('${t.id}',${idx})">X</button>
+                <button class="red" onclick="remove\u0626\u0627\u06cc\u062a\u0645('${t.id}',${idx})">X</button>
               </td>
             </tr>
-          `).join("") || '<tr><td colspan="4" class="muted">No items yet</td></tr>'
+          `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0626\u0627\u06cc\u062a\u0645\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
         }
       </tbody>
     </table>
   </div>
 
   <div class="actions" style="margin-top:12px">
-    <button class="purple" onclick="setStatus('${t.id}','kitchen')">Send to Kitchen</button>
+    <button class="purple" onclick="set\u062f\u06c6\u062e('${t.id}','kitchen')">\u0628\u0646\u06ce\u0631\u06d5 \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</button>
     ${
       canManage()
-      ? `<button class="red" onclick="checkout('${t.id}')">Checkout & Print</button>
-         <button class="secondary" onclick="clearOrder('${t.id}')">Clear</button>`
+      ? `<button class="red" onclick="checkout('${t.id}')">\u0641\u0631\u06c6\u0634\u062a\u0646 \u0648 \u0686\u0627\u067e</button>
+         <button class="secondary" onclick="clearOrder('${t.id}')">\u067e\u0627\u06a9\u06a9\u0631\u062f\u0646\u06d5\u0648\u06d5</button>`
       : ""
     }
   </div>`;
 
-  renderMenuToAdd();
+  renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646();
 }
 
-function renderMenuToAdd(){
-  const box = byId("menuToAdd");
+function renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646(){
+  const box = byId("menuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646");
   if(!box || !state.selectedTable) return;
 
   const q = (byId("menuSearch")?.value || "").toLowerCase();
@@ -679,7 +680,7 @@ function renderMenuToAdd(){
   );
 
   box.innerHTML = items.map(i => `
-    <button class="itembtn" onclick="addItem('${state.selectedTable}','${i.id}')">
+    <button class="itembtn" onclick="add\u0626\u0627\u06cc\u062a\u0645('${state.selectedTable}','${i.id}')">
       <b>${i.name}</b>
       <span>${i.category}</span>
       <strong>${money(i.price)}</strong>
@@ -687,12 +688,12 @@ function renderMenuToAdd(){
   `).join("");
 }
 
-async function addItem(tid,itemId){
+async function add\u0626\u0627\u06cc\u062a\u0645(tid,itemId){
   const p = data.menu.find(x => x.id === itemId);
   if(!p) return;
 
   if(Number(p.stock) <= 0){
-    return alert("This item is out of stock");
+    return alert("\u0626\u06d5\u0645 \u0626\u0627\u06cc\u062a\u0645\u06d5 \u0633\u062a\u06c6\u06a9\u06cc \u0646\u06d5\u0645\u0627\u0648\u06d5");
   }
 
   const o = order(tid);
@@ -713,38 +714,38 @@ async function addItem(tid,itemId){
   o.status = o.status || "open";
 
   await saveOrder(o);
-  await updateTableStatus(tid,"busy");
+  await updateTable\u062f\u06c6\u062e(tid,"busy");
 }
 
-async function setQty(tid,idx,v){
+async function set\u062f\u0627\u0646\u06d5(tid,idx,v){
   const o = order(tid);
   o.items[idx].qty = Math.max(1, Number(v || 1));
   await saveOrder(o);
 }
 
-async function removeItem(tid,idx){
+async function remove\u0626\u0627\u06cc\u062a\u0645(tid,idx){
   const o = order(tid);
   o.items.splice(idx,1);
   await saveOrder(o);
 }
 
 async function clearOrder(tid){
-  if(!confirm("Clear this order?")) return;
+  if(!confirm("\u062f\u06d5\u062a\u06d5\u0648\u06ce\u062a \u0626\u06d5\u0645 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06d5 \u067e\u0627\u06a9 \u0628\u06a9\u06d5\u06cc\u062a\u06d5\u0648\u06d5\u061f")) return;
 
   await deleteDoc(docRef("orders",tid));
-  await updateTableStatus(tid,"free");
+  await updateTable\u062f\u06c6\u062e(tid,"\u0628\u06d5\u062a\u0627\u06b5");
 }
 
 async function checkout(tid){
   if(!canManage()){
-    return alert("Only cashier can checkout");
+    return alert("\u062a\u06d5\u0646\u0647\u0627 \u06a9\u0627\u0634\u06ce\u0631 \u062f\u06d5\u062a\u0648\u0627\u0646\u06ce\u062a \u0641\u0631\u06c6\u0634\u062a\u0646 \u062a\u06d5\u0648\u0627\u0648 \u0628\u06a9\u0627\u062a");
   }
 
   const t = tableById(tid);
   const o = order(tid);
 
   if(!o.items.length){
-    return alert("Order is empty");
+    return alert("\u0626\u06c6\u0631\u062f\u06d5\u0631 \u0628\u06d5\u062a\u0627\u06b5\u06d5");
   }
 
   const sale = {
@@ -753,16 +754,16 @@ async function checkout(tid){
     table: t.name,
     type: o.type,
     status: "paid",
-    customerName: o.customerName || "",
-    customerPhone: o.customerPhone || "",
+    customer\u0646\u0627\u0648: o.customer\u0646\u0627\u0648 || "",
+    customer\u0645\u06c6\u0628\u0627\u06cc\u0644: o.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || "",
     note: o.note || "",
     items: clean(o.items),
-    subtotal: itemsTotal(o),
-    service: serviceAmount(o),
-    tax: taxAmount(o),
+    subtotal: items\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
+    service: service\u0628\u0695(o),
+    tax: tax\u0628\u0695(o),
     discount: Number(o.discount || 0),
-    total: orderTotal(o),
-    paid: orderTotal(o),
+    total: order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
+    paid: order\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc(o),
     change: 0
   };
 
@@ -781,14 +782,14 @@ async function checkout(tid){
     }
   });
 
-  if(sale.customerName || sale.customerPhone){
-    const cid = (sale.customerPhone || sale.customerName || sale.id).replace(/[^a-zA-Z0-9_-]/g,"_");
+  if(sale.customer\u0646\u0627\u0648 || sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644){
+    const cid = (sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || sale.customer\u0646\u0627\u0648 || sale.id).replace(/[^a-zA-Z0-9_-]/g,"_");
 
     b.set(
       docRef("customers", cid),
       {
-        name: sale.customerName || "Customer",
-        phone: sale.customerPhone || "",
+        name: sale.customer\u0646\u0627\u0648 || "\u06a9\u0695\u06cc\u0627\u0631",
+        phone: sale.customer\u0645\u06c6\u0628\u0627\u06cc\u0644 || "",
         visits: increment(1),
         total: increment(sale.total),
         updated: nowISO()
@@ -798,11 +799,11 @@ async function checkout(tid){
   }
 
   b.delete(docRef("orders", tid));
-  b.set(docRef("tables", tid), clean(Object.assign({}, t, { status:"free" })), { merge:true });
+  b.set(docRef("tables", tid), clean(Object.assign({}, t, { status:"\u0628\u06d5\u062a\u0627\u06b5" })), { merge:true });
 
   await b.commit();
 
-  printReceipt(sale);
+  print\u0648\u06d5\u0633\u0644(sale);
 }
 
 /* KITCHEN */
@@ -812,7 +813,7 @@ function kitchenHtml(){
 
   return `
   <div class="card">
-    <h2>Kitchen Display</h2>
+    <h2>\u0634\u0627\u0634\u06d5\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</h2>
 
     <div class="grid two">
       ${
@@ -841,11 +842,11 @@ function kitchenHtml(){
             </div>
 
             <div class="actions" style="margin-top:10px">
-              <button class="purple" onclick="setStatus('${o.tableId}','kitchen')">Cooking</button>
-              <button class="green" onclick="setStatus('${o.tableId}','ready')">Ready</button>
+              <button class="purple" onclick="set\u062f\u06c6\u062e('${o.tableId}','kitchen')">\u0644\u06d5 \u0626\u0627\u0645\u0627\u062f\u06d5\u06a9\u0631\u062f\u0646\u062f\u0627\u06cc\u06d5</button>
+              <button class="green" onclick="set\u062f\u06c6\u062e('${o.tableId}','ready')">\u0626\u0627\u0645\u0627\u062f\u06d5\u06cc\u06d5</button>
             </div>
           </div>`;
-        }).join("") || '<p class="muted">No orders yet</p>'
+        }).join("") || '<p class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</p>'
       }
     </div>
   </div>`;
@@ -853,7 +854,7 @@ function kitchenHtml(){
 
 /* RECEIPT */
 
-function printReceipt(sale){
+function print\u0648\u06d5\u0633\u0644(sale){
   const lines = sale.items.map(i => `
     <tr>
       <td>${i.name}</td>
@@ -867,24 +868,24 @@ function printReceipt(sale){
   area.innerHTML = `
   <div class="receipt">
     <div class="receipt-head">
-      <div class="receipt-logo">ð½ï¸</div>
-      <h3>${data.user.restaurantName}</h3>
+      <div class="receipt-logo">POS</div>
+      <h3>${data.user.restaurant\u0646\u0627\u0648}</h3>
       <p>${data.user.phone || ""}</p>
     </div>
 
-    <p><b>Table:</b> ${sale.table}</p>
-    <p><b>Type:</b> ${sale.type}</p>
-    <p><b>Receipt:</b> ${sale.id}</p>
-    <p><b>Date:</b> ${new Date(sale.date).toLocaleString()}</p>
+    <p><b>\u0645\u06ce\u0632:</b> ${sale.table}</p>
+    <p><b>\u062c\u06c6\u0631:</b> ${sale.type}</p>
+    <p><b>\u0648\u06d5\u0633\u0644:</b> ${sale.id}</p>
+    <p><b>\u0628\u06d5\u0631\u0648\u0627\u0631:</b> ${new Date(sale.date).toLocaleString()}</p>
 
     <hr>
 
     <table>
       <thead>
         <tr>
-          <th>Item</th>
-          <th>Qty</th>
-          <th>Total</th>
+          <th>\u0626\u0627\u06cc\u062a\u0645</th>
+          <th>\u062f\u0627\u0646\u06d5</th>
+          <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
         </tr>
       </thead>
       <tbody>${lines}</tbody>
@@ -893,25 +894,25 @@ function printReceipt(sale){
     <hr>
 
     <div class="receipt-total">
-      <p>Subtotal: ${money(sale.subtotal)}</p>
-      <p>Service: ${money(sale.service)}</p>
-      <p>Tax: ${money(sale.tax)}</p>
-      <p>Discount: ${money(sale.discount)}</p>
-      <h3>Total: ${money(sale.total)}</h3>
-      <p>Paid: ${money(sale.paid)}</p>
-      <p>Change: ${money(sale.change)}</p>
+      <p>\u06a9\u06c6\u06cc \u0644\u0627\u0648\u06d5\u06a9\u06cc: ${money(sale.subtotal)}</p>
+      <p>\u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc: ${money(sale.service)}</p>
+      <p>\u0628\u0627\u062c: ${money(sale.tax)}</p>
+      <p>\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646: ${money(sale.discount)}</p>
+      <h3>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc: ${money(sale.total)}</h3>
+      <p>\u067e\u0627\u0631\u06d5\u06cc \u0648\u06d5\u0631\u06af\u06cc\u0631\u0627\u0648: ${money(sale.paid)}</p>
+      <p>\u06af\u06d5\u0695\u0627\u0648\u06d5: ${money(sale.change)}</p>
     </div>
 
     <div class="receipt-footer">
       <p>${data.user.receiptNote}</p>
-      <p>Thank you ð½ï¸</p>
+      <p>\u0633\u0648\u067e\u0627\u0633 POS</p>
     </div>
   </div>`;
 
   area.classList.remove("hidden");
   document.body.classList.add("printing-receipt");
 
-  setTimeout(() => window.print(), 350);
+  set\u06a9\u0627\u062aout(() => window.print(), 350);
 
   const cleanPrint = () => {
     document.body.classList.remove("printing-receipt");
@@ -924,7 +925,7 @@ function printReceipt(sale){
 
   window.addEventListener("afterprint", cleanPrint);
 
-  setTimeout(() => {
+  set\u06a9\u0627\u062aout(() => {
     if(document.body.classList.contains("printing-receipt")){
       cleanPrint();
     }
@@ -935,56 +936,56 @@ function printReceipt(sale){
 
 function menuHtml(){
   if(!canManage()){
-    return `<div class="card"><h2>Access denied</h2></div>`;
+    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
   }
 
   return `
   <div class="grid two">
     <div class="card">
-      <h2>${state.editingItem ? "Edit Item" : "Add Item"}</h2>
+      <h2>${state.editing\u0626\u0627\u06cc\u062a\u0645 ? "\u062f\u06d5\u0633\u062a\u06a9\u0627\u0631\u06cc \u0626\u0627\u06cc\u062a\u0645" : "\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646\u06cc \u0626\u0627\u06cc\u062a\u0645"}</h2>
 
-      <label>Code</label>
-      <input id="mCode">
+      <label>\u06a9\u06c6\u062f</label>
+      <input id="m\u06a9\u06c6\u062f">
 
-      <label>Name</label>
-      <input id="mName">
+      <label>\u0646\u0627\u0648</label>
+      <input id="m\u0646\u0627\u0648">
 
-      <label>Category</label>
-      <input id="mCategory" placeholder="Food / Drinks / Dessert">
+      <label>\u062c\u06c6\u0631</label>
+      <input id="m\u062c\u06c6\u0631" placeholder="\u062e\u0648\u0627\u0631\u062f\u0646 / \u062e\u0648\u0627\u0631\u062f\u0646\u06d5\u0648\u06d5 / \u0634\u06cc\u0631\u06cc\u0646\u06cc">
 
       <div class="row">
         <div>
-          <label>Sale Price</label>
-          <input id="mPrice" type="number">
+          <label>\u0646\u0631\u062e\u06cc \u0641\u0631\u06c6\u0634\u062a\u0646</label>
+          <input id="m\u0646\u0631\u062e" type="number">
         </div>
 
         <div>
-          <label>Cost</label>
-          <input id="mCost" type="number">
+          <label>\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646</label>
+          <input id="m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646" type="number">
         </div>
       </div>
 
       <div class="row">
         <div>
-          <label>Stock</label>
-          <input id="mStock" type="number" value="20">
+          <label>\u0633\u062a\u06c6\u06a9</label>
+          <input id="m\u0633\u062a\u06c6\u06a9" type="number" value="20">
         </div>
 
         <div>
-          <label>Low Stock Alert</label>
+          <label>\u0626\u0627\u06af\u0627\u062f\u0627\u0631\u06cc \u0633\u062a\u06c6\u06a9\u06cc \u06a9\u06d5\u0645</label>
           <input id="mMin" type="number" value="5">
         </div>
       </div>
 
       <div class="actions" style="margin-top:12px">
-        <button class="green" onclick="saveMenuItem()">Save</button>
-        <button class="secondary" onclick="state.editingItem=null;render()">New</button>
+        <button class="green" onclick="saveMenu\u0626\u0627\u06cc\u062a\u0645()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646</button>
+        <button class="secondary" onclick="state.editing\u0626\u0627\u06cc\u062a\u0645=null;render()">\u0646\u0648\u06ce</button>
       </div>
     </div>
 
     <div class="card">
-      <h2>Menu / Stock</h2>
-      <input id="menuListSearch" placeholder="Search..." oninput="renderMenuTable()">
+      <h2>\u0645\u06cc\u0646\u06cc\u0648 / \u0633\u062a\u06c6\u06a9</h2>
+      <input id="menuListSearch" placeholder="\u06af\u06d5\u0695\u0627\u0646..." oninput="renderMenuTable()">
       <div id="menuTable" style="margin-top:12px"></div>
     </div>
   </div>`;
@@ -1007,10 +1008,10 @@ function renderMenuTable(){
         <td>${p.name}</td>
         <td>${p.category}</td>
         <td>${money(p.price)}</td>
-        <td><span class="badge ${p.stock <= p.minStock ? 'red' : ''}">${p.stock}</span></td>
+        <td><span class="badge ${p.stock <= p.min\u0633\u062a\u06c6\u06a9 ? 'red' : ''}">${p.stock}</span></td>
         <td>
-          <button class="blue" onclick="editMenuItem('${p.id}')">Edit</button>
-          <button class="red" onclick="deleteMenuItem('${p.id}')">Delete</button>
+          <button class="blue" onclick="editMenu\u0626\u0627\u06cc\u062a\u0645('${p.id}')">\u062f\u06d5\u0633\u062a\u06a9\u0627\u0631\u06cc</button>
+          <button class="red" onclick="deleteMenu\u0626\u0627\u06cc\u062a\u0645('${p.id}')">\u0633\u0695\u06cc\u0646\u06d5\u0648\u06d5</button>
         </td>
       </tr>
     `).join("");
@@ -1020,11 +1021,11 @@ function renderMenuTable(){
     <table>
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Price</th>
-          <th>Stock</th>
+          <th>\u06a9\u06c6\u062f</th>
+          <th>\u0646\u0627\u0648</th>
+          <th>\u062c\u06c6\u0631</th>
+          <th>\u0646\u0631\u062e</th>
+          <th>\u0633\u062a\u06c6\u06a9</th>
           <th></th>
         </tr>
       </thead>
@@ -1033,48 +1034,48 @@ function renderMenuTable(){
   </div>`;
 }
 
-async function saveMenuItem(){
-  const id = state.editingItem || (byId("mCode").value.trim() || crypto.randomUUID());
+async function saveMenu\u0626\u0627\u06cc\u062a\u0645(){
+  const id = state.editing\u0626\u0627\u06cc\u062a\u0645 || (byId("m\u06a9\u06c6\u062f").value.trim() || crypto.randomUUID());
 
   const item = {
     id,
-    code: byId("mCode").value.trim(),
-    name: byId("mName").value.trim(),
-    category: byId("mCategory").value.trim() || "Other",
-    price: Number(byId("mPrice").value || 0),
-    cost: Number(byId("mCost").value || 0),
-    stock: Number(byId("mStock").value || 0),
-    minStock: Number(byId("mMin").value || 0),
+    code: byId("m\u06a9\u06c6\u062f").value.trim(),
+    name: byId("m\u0646\u0627\u0648").value.trim(),
+    category: byId("m\u062c\u06c6\u0631").value.trim() || "Other",
+    price: Number(byId("m\u0646\u0631\u062e").value || 0),
+    cost: Number(byId("m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646").value || 0),
+    stock: Number(byId("m\u0633\u062a\u06c6\u06a9").value || 0),
+    min\u0633\u062a\u06c6\u06a9: Number(byId("mMin").value || 0),
     sort: Date.now()
   };
 
   if(!item.code || !item.name || !item.price){
-    return alert("Code, name and price are required");
+    return alert("\u06a9\u06c6\u062f\u060c \u0646\u0627\u0648 \u0648 \u0646\u0631\u062e \u067e\u06ce\u0648\u06cc\u0633\u062a\u0646");
   }
 
   await setDoc(docRef("menu", id), clean(item), { merge:true });
 
-  state.editingItem = null;
+  state.editing\u0626\u0627\u06cc\u062a\u0645 = null;
   render();
 }
 
-function editMenuItem(id){
-  state.editingItem = id;
+function editMenu\u0626\u0627\u06cc\u062a\u0645(id){
+  state.editing\u0626\u0627\u06cc\u062a\u0645 = id;
   render();
 
   const p = data.menu.find(x => x.id === id);
 
-  byId("mCode").value = p.code;
-  byId("mName").value = p.name;
-  byId("mCategory").value = p.category || "";
-  byId("mPrice").value = p.price;
-  byId("mCost").value = p.cost;
-  byId("mStock").value = p.stock;
-  byId("mMin").value = p.minStock || 0;
+  byId("m\u06a9\u06c6\u062f").value = p.code;
+  byId("m\u0646\u0627\u0648").value = p.name;
+  byId("m\u062c\u06c6\u0631").value = p.category || "";
+  byId("m\u0646\u0631\u062e").value = p.price;
+  byId("m\u0646\u0631\u062e\u06cc \u06a9\u0695\u06cc\u0646").value = p.cost;
+  byId("m\u0633\u062a\u06c6\u06a9").value = p.stock;
+  byId("mMin").value = p.min\u0633\u062a\u06c6\u06a9 || 0;
 }
 
-async function deleteMenuItem(id){
-  if(!confirm("Delete this item?")) return;
+async function deleteMenu\u0626\u0627\u06cc\u062a\u0645(id){
+  if(!confirm("\u0626\u06d5\u0645 \u0626\u0627\u06cc\u062a\u0645\u06d5 \u0628\u0633\u0695\u062f\u0631\u06ce\u062a\u06d5\u0648\u06d5\u061f")) return;
   await deleteDoc(docRef("menu", id));
 }
 
@@ -1083,16 +1084,16 @@ async function deleteMenuItem(id){
 function customersHtml(){
   return `
   <div class="card">
-    <h2>Customers</h2>
+    <h2>\u06a9\u0695\u06cc\u0627\u0631\u0627\u0646</h2>
 
     <div class="tablewrap">
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Visits</th>
-            <th>Total</th>
+            <th>\u0646\u0627\u0648</th>
+            <th>\u0645\u06c6\u0628\u0627\u06cc\u0644</th>
+            <th>\u0633\u06d5\u0631\u062f\u0627\u0646</th>
+            <th>\u06a9\u06c6\u06cc \u06af\u0634\u062a\u06cc</th>
           </tr>
         </thead>
 
@@ -1105,7 +1106,7 @@ function customersHtml(){
                 <td>${c.visits || 0}</td>
                 <td>${money(c.total || 0)}</td>
               </tr>
-            `).join("") || '<tr><td colspan="4" class="muted">No customers yet</td></tr>'
+            `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u06a9\u0695\u06cc\u0627\u0631\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
           }
         </tbody>
       </table>
@@ -1117,36 +1118,36 @@ function customersHtml(){
 
 function expensesHtml(){
   if(!canManage()){
-    return `<div class="card"><h2>Access denied</h2></div>`;
+    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
   }
 
   return `
   <div class="grid two">
     <div class="card">
-      <h2>Add Expense</h2>
+      <h2>\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646\u06cc \u0645\u06d5\u0633\u0631\u0648\u0641</h2>
 
-      <label>Title</label>
-      <input id="exTitle">
+      <label>\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646</label>
+      <input id="ex\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646">
 
-      <label>Amount</label>
-      <input id="exAmount" type="number">
+      <label>\u0628\u0695</label>
+      <input id="ex\u0628\u0695" type="number">
 
-      <button class="green" style="margin-top:12px" onclick="addExpense()">Add</button>
+      <button class="green" style="margin-top:12px" onclick="addExpense()">\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646</button>
     </div>
 
     <div class="card">
-      <h2>Expenses</h2>
+      <h2>\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a</h2>
       <div id="expensesBox"></div>
     </div>
   </div>`;
 }
 
 async function addExpense(){
-  const title = byId("exTitle").value.trim();
-  const amount = Number(byId("exAmount").value || 0);
+  const title = byId("ex\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646").value.trim();
+  const amount = Number(byId("ex\u0628\u0695").value || 0);
 
   if(!title || !amount){
-    return alert("Title and amount are required");
+    return alert("\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646 \u0648 \u0628\u0695 \u067e\u06ce\u0648\u06cc\u0633\u062a\u0646");
   }
 
   const id = crypto.randomUUID();
@@ -1159,7 +1160,7 @@ async function addExpense(){
   });
 }
 
-function renderExpenses(){
+function render\u0645\u06d5\u0633\u0631\u0648\u0641\u0627\u062a(){
   const box = byId("expensesBox");
   if(!box) return;
 
@@ -1168,9 +1169,9 @@ function renderExpenses(){
     <table>
       <thead>
         <tr>
-          <th>Time</th>
-          <th>Title</th>
-          <th>Amount</th>
+          <th>\u06a9\u0627\u062a</th>
+          <th>\u0646\u0627\u0648\u0646\u06cc\u0634\u0627\u0646</th>
+          <th>\u0628\u0695</th>
           <th></th>
         </tr>
       </thead>
@@ -1184,7 +1185,7 @@ function renderExpenses(){
               <td>${money(e.amount)}</td>
               <td><button class="red" onclick="deleteExpense('${e.id}')">X</button></td>
             </tr>
-          `).join("") || '<tr><td colspan="4" class="muted">No expenses yet</td></tr>'
+          `).join("") || '<tr><td colspan="4" class="muted">\u0647\u06ce\u0634\u062a\u0627 \u0647\u06cc\u0686 \u0645\u06d5\u0633\u0631\u0648\u0641\u06ce\u06a9 \u0646\u06cc\u06cc\u06d5</td></tr>'
         }
       </tbody>
     </table>
@@ -1212,14 +1213,14 @@ function reportsHtml(){
 
   return `
   <div class="grid four">
-    <div class="card"><div class="muted">Today Sales</div><div class="kpi">${money(totalD)}</div></div>
-    <div class="card"><div class="muted">Net Profit</div><div class="kpi">${money(profitD)}</div></div>
-    <div class="card"><div class="muted">Discount</div><div class="kpi">${money(discD)}</div></div>
-    <div class="card"><div class="muted">Month Sales</div><div class="kpi">${money(totalM)}</div></div>
+    <div class="card"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0626\u06d5\u0645\u0695\u06c6</div><div class="kpi">${money(totalD)}</div></div>
+    <div class="card"><div class="muted">\u0642\u0627\u0632\u0627\u0646\u062c\u06cc \u067e\u0627\u06a9</div><div class="kpi">${money(profitD)}</div></div>
+    <div class="card"><div class="muted">\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646</div><div class="kpi">${money(discD)}</div></div>
+    <div class="card"><div class="muted">\u0641\u0631\u06c6\u0634\u062a\u0646\u06cc \u0645\u0627\u0646\u06af</div><div class="kpi">${money(totalM)}</div></div>
   </div>
 
   <div class="card" style="margin-top:14px">
-    <h2>Recent Receipts</h2>
+    <h2>\u062f\u0648\u0627\u06cc\u06cc\u0646 \u0648\u06d5\u0633\u0644\u06d5\u06a9\u0627\u0646</h2>
     ${recentSalesTable(100)}
   </div>`;
 }
@@ -1227,73 +1228,73 @@ function reportsHtml(){
 /* SETTINGS */
 
 function settingsHtml(){
-  if(!canSettings()){
-    return `<div class="card"><h2>Access denied</h2></div>`;
+  if(!can\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646()){
+    return `<div class="card"><h2>\u0695\u06ce\u06af\u06d5\u062a \u067e\u06ce\u0646\u06d5\u062f\u0631\u0627\u0648\u06d5</h2></div>`;
   }
 
   return `
   <div class="grid two">
     <div class="card">
-      <h2>Settings</h2>
+      <h2>\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646</h2>
 
-      <label>Restaurant Name</label>
-      <input id="restaurantName" value="${data.user.restaurantName}">
+      <label>\u0646\u0627\u0648\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a</label>
+      <input id="restaurant\u0646\u0627\u0648" value="${data.user.restaurant\u0646\u0627\u0648}">
 
-      <label>Phone</label>
+      <label>\u0645\u06c6\u0628\u0627\u06cc\u0644</label>
       <input id="phone" value="${data.user.phone}">
 
       <div class="row">
         <div>
-          <label>Service %</label>
+          <label>\u062e\u0632\u0645\u06d5\u062a\u06af\u0648\u0632\u0627\u0631\u06cc %</label>
           <input id="servicePercent" type="number" value="${data.user.servicePercent}">
         </div>
 
         <div>
-          <label>Tax %</label>
+          <label>\u0628\u0627\u062c %</label>
           <input id="taxPercent" type="number" value="${data.user.taxPercent}">
         </div>
       </div>
 
-      <label>Captain Password</label>
-      <input id="captainPassword" type="password" value="${data.user.captainPassword}">
+      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u06a9\u0627\u067e\u062a\u0646</label>
+      <input id="captain\u067e\u0627\u0633\u06c6\u0631\u062f" type="password" value="${data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f}">
 
-      <label>Kitchen Password</label>
-      <input id="kitchenPassword" type="password" value="${data.user.kitchenPassword}">
+      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0686\u06ce\u0634\u062a\u062e\u0627\u0646\u06d5</label>
+      <input id="kitchen\u067e\u0627\u0633\u06c6\u0631\u062f" type="password" value="${data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f}">
 
-      <label>Receipt Note</label>
+      <label>\u062a\u06ce\u0628\u06cc\u0646\u06cc \u0648\u06d5\u0633\u0644</label>
       <input id="receiptNote" value="${data.user.receiptNote}">
 
-      <label>New Cashier Password</label>
-      <input id="newPass" type="password" placeholder="Leave empty if you do not want to change it">
+      <label>\u067e\u0627\u0633\u06c6\u0631\u062f\u06cc \u0646\u0648\u06ce\u06cc \u06a9\u0627\u0634\u06ce\u0631</label>
+      <input id="newPass" type="password" placeholder="\u0628\u06d5\u062a\u0627\u06b5\u06cc \u0628\u0647\u06ce\u06b5\u06d5 \u0626\u06d5\u06af\u06d5\u0631 \u0646\u0627\u06af\u06c6\u0695\u06cc\u062a">
 
-      <button class="green" style="margin-top:12px" onclick="saveSettings()">Save</button>
+      <button class="green" style="margin-top:12px" onclick="save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646</button>
     </div>
 
     <div class="card">
-      <h2>Backup</h2>
+      <h2>\u0628\u0627\u06a9\u06d5\u067e</h2>
 
       <div class="actions">
-        <button class="blue" onclick="exportBackup()">Export</button>
+        <button class="blue" onclick="export\u0628\u0627\u06a9\u06d5\u067e()">\u0647\u06d5\u06b5\u06af\u0631\u062a\u0646\u06cc \u0628\u0627\u06a9\u06d5\u067e</button>
       </div>
 
-      <p class="muted">Export backup regularly.</p>
+      <p class="muted">\u0628\u0627\u06a9\u06d5\u067e \u0628\u06d5 \u0634\u06ce\u0648\u06d5\u06cc \u0628\u06d5\u0631\u062f\u06d5\u0648\u0627\u0645 \u0628\u06a9\u06d5.</p>
     </div>
   </div>
 
   <div class="card" style="margin-top:14px">
-    <h2>Tables</h2>
+    <h2>\u0645\u06ce\u0632\u06d5\u06a9\u0627\u0646</h2>
 
     <div class="row">
-      <input id="newTableName" placeholder="Table 7">
-      <button class="green" onclick="addTable()">Add</button>
+      <input id="newTable\u0646\u0627\u0648" placeholder="\u0645\u06ce\u0632\u06cc 7">
+      <button class="green" onclick="addTable()">\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646</button>
     </div>
 
     <div class="tablewrap" style="margin-top:12px">
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Status</th>
+            <th>\u0646\u0627\u0648</th>
+            <th>\u062f\u06c6\u062e</th>
             <th></th>
           </tr>
         </thead>
@@ -1304,7 +1305,7 @@ function settingsHtml(){
               <tr>
                 <td>${t.name}</td>
                 <td>${t.status}</td>
-                <td><button class="red" onclick="deleteTable('${t.id}')">Delete</button></td>
+                <td><button class="red" onclick="deleteTable('${t.id}')">\u0633\u0695\u06cc\u0646\u06d5\u0648\u06d5</button></td>
               </tr>
             `).join("")
           }
@@ -1314,15 +1315,15 @@ function settingsHtml(){
   </div>`;
 }
 
-async function saveSettings(){
+async function save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646(){
   const u = Object.assign({}, data.user, {
-    restaurantName: byId("restaurantName").value.trim() || "Restaurant POS Cloud",
+    restaurant\u0646\u0627\u0648: byId("restaurant\u0646\u0627\u0648").value.trim() || "\u0633\u06cc\u0633\u062a\u06d5\u0645\u06cc \u0695\u06ce\u0633\u062a\u06c6\u0631\u0627\u0646\u062a",
     phone: byId("phone").value.trim(),
     servicePercent: Number(byId("servicePercent").value || 0),
     taxPercent: Number(byId("taxPercent").value || 0),
-    captainPassword: byId("captainPassword").value.trim() || data.user.captainPassword || "1111",
-    kitchenPassword: byId("kitchenPassword").value.trim() || data.user.kitchenPassword || "2222",
-    receiptNote: byId("receiptNote").value.trim() || "Thank you for visiting us"
+    captain\u067e\u0627\u0633\u06c6\u0631\u062f: byId("captain\u067e\u0627\u0633\u06c6\u0631\u062f").value.trim() || data.user.captain\u067e\u0627\u0633\u06c6\u0631\u062f || "1111",
+    kitchen\u067e\u0627\u0633\u06c6\u0631\u062f: byId("kitchen\u067e\u0627\u0633\u06c6\u0631\u062f").value.trim() || data.user.kitchen\u067e\u0627\u0633\u06c6\u0631\u062f || "2222",
+    receiptNote: byId("receiptNote").value.trim() || "\u0633\u0648\u067e\u0627\u0633 \u0628\u06c6 \u0633\u06d5\u0631\u062f\u0627\u0646\u062a\u0627\u0646"
   });
 
   const np = byId("newPass").value;
@@ -1332,14 +1333,14 @@ async function saveSettings(){
 
   await setDoc(settingsRef(), clean(u), { merge:true });
 
-  alert("Settings saved");
+  alert("\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646\u06d5\u06a9\u0627\u0646 \u0647\u06d5\u06b5\u06af\u06cc\u0631\u0627\u0646");
 }
 
 async function addTable(){
-  const name = byId("newTableName").value.trim();
+  const name = byId("newTable\u0646\u0627\u0648").value.trim();
 
   if(!name){
-    return alert("Write table name");
+    return alert("\u0646\u0627\u0648\u06cc \u0645\u06ce\u0632 \u0628\u0646\u0648\u0648\u0633\u06d5");
   }
 
   const id = crypto.randomUUID();
@@ -1347,21 +1348,21 @@ async function addTable(){
   await setDoc(docRef("tables", id), {
     id,
     name,
-    status:"free",
+    status:"\u0628\u06d5\u062a\u0627\u06b5",
     sort:Date.now()
   });
 }
 
 async function deleteTable(id){
   if(order(id).items.length){
-    return alert("Clear this table order first");
+    return alert("\u0633\u06d5\u0631\u06d5\u062a\u0627 \u0626\u06c6\u0631\u062f\u06d5\u0631\u06cc \u0626\u06d5\u0645 \u0645\u06ce\u0632\u06d5 \u067e\u0627\u06a9 \u0628\u06a9\u06d5\u0648\u06d5");
   }
 
   await deleteDoc(docRef("tables", id));
   await deleteDoc(docRef("orders", id));
 }
 
-function exportBackup(){
+function export\u0628\u0627\u06a9\u06d5\u067e(){
   const blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -1377,26 +1378,26 @@ Object.assign(window, {
   go,
   selectTable,
   reserveTable,
-  setType,
-  setStatus,
-  setDiscount,
+  set\u062c\u06c6\u0631,
+  set\u062f\u06c6\u062e,
+  set\u062f\u0627\u0634\u06a9\u0627\u0646\u062f\u0646,
   setNote,
-  setCustomerInfo,
-  renderMenuToAdd,
-  addItem,
-  setQty,
-  removeItem,
+  set\u06a9\u0695\u06cc\u0627\u0631Info,
+  renderMenuTo\u0632\u06cc\u0627\u062f\u06a9\u0631\u062f\u0646,
+  add\u0626\u0627\u06cc\u062a\u0645,
+  set\u062f\u0627\u0646\u06d5,
+  remove\u0626\u0627\u06cc\u062a\u0645,
   clearOrder,
   checkout,
-  saveMenuItem,
-  editMenuItem,
-  deleteMenuItem,
+  saveMenu\u0626\u0627\u06cc\u062a\u0645,
+  editMenu\u0626\u0627\u06cc\u062a\u0645,
+  deleteMenu\u0626\u0627\u06cc\u062a\u0645,
   addExpense,
   deleteExpense,
-  saveSettings,
+  save\u0695\u06ce\u06a9\u062e\u0633\u062a\u0646,
   addTable,
   deleteTable,
-  exportBackup,
+  export\u0628\u0627\u06a9\u06d5\u067e,
   state,
   byId
 });
