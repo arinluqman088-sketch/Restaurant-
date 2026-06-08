@@ -1,4 +1,4 @@
-const CACHE_NAME = "restaurant-pos-ultra-v10";
+const CACHE_NAME = "restaurant-pos-cloud-v21";
 const ASSETS = ["./","./index.html","./style.css","./app.js","./manifest.json","./assets/icon.svg"];
 
 self.addEventListener("install", event => {
